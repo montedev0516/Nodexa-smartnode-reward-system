@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #2631d3;
   --foreground: #171717;
 }
 
@@ -11,6 +11,34 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+
+@theme {
+  --size-custom-width: 340px;
+  --size-custom-height: 200px;
+  --size-custom-width-padding: 450px;
+  --size-custom-width-ring: 380px;
+  --size-custom-width-lg: 900px;
+  --size-custom-height-lg: 600px;
+}
+
+@layer utilities {
+  .w-custom {
+    width: var(--size-custom-width);
+  }
+
+  .h-custom {
+    height: var(--size-custom-height);
+  }
+
+  .w-padding {
+    width: var(--size-custom-width-padding);
+  }
+
+  .w-ring {
+    width: var(--size-custom-width-ring);
+  }
+}
+
 
 @media (prefers-color-scheme: dark) {
   :root {
