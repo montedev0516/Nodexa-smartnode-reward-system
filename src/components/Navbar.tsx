@@ -6,7 +6,9 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const accountButtonRef = useRef<HTMLButtonElement | null>(null);
 
   return (
     <nav className="flex justify-between items-center px-[83px] pt-18 pb-9">
@@ -26,12 +28,12 @@ export default function Navbar() {
             {menuOpen ? <XIcon className="h-6 w-6 cursor-pointer" /> : <MenuIcon className="h-6 w-6 cursor-pointer" />}
           </button>
           {menuOpen && menuButtonRef.current && (
-            <div className="absolute top-3 left-3 -translate-x-full bg-[#3bb18a] flex flex-col items-center space-y-4 p-4 border-2 border-white rounded-lg shadow-lg w-[250px] h-[250px] md:w-[200px] md:h-[150px] ">
-              <Link href="/sharednodes" className="hover:text-blue-400 text-xl font-family-sora text-[#B0B0B0] transition-colors duration-300">SARED NODES</Link>
-              <Link href="/privatenodes" className="hover:text-blue-400 text-xl font-family-sora   text-[#B0B0B0] transition-colors duration-300">PRIVATE NODES</Link>
-              <Link href="/dashboard" className="hover:text-blue-400 text-xl font-family-sora text-[#B0B0B0] transition-colors duration-300">DASHBOARD</Link>
-              <Link href="/login" className="md:hidden hover:text-blue-400 text-xl font-family-sora text-[#B0B0B0] transition-colors duration-300">LOG IN</Link>
-              <Link href="/signup" className="md:hidden hover:text-blue-400 text-xl font-family-sora text-[#B0B0B0] transition-colors duration-300">SIGN UP</Link>
+            <div className="absolute top-3 left-3 -translate-x-full border-[1px] border-[#00AEB9] bg-[#272E50] rounded-[18px] flex flex-col justify-center items-start space-y-3 pl-[20px] pt-[20px] w-[150px] h-[200px] md:w-[150px] md:h-[120px] ">
+              <Link href="/sharednodes" onClick={() => setMenuOpen(false)} className="hover:text-blue-400 text-[14px] font-family-sora text-white transition-colors duration-300">SARED NODES</Link>
+              <Link href="/privatenodes" onClick={() => setMenuOpen(false)} className="hover:text-blue-400 text-[14px] font-family-sora  text-white transition-colors duration-300">PRIVATE NODES</Link>
+              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="hover:text-blue-400 text-[14px] font-family-sora text-white transition-colors duration-300">DASHBOARD</Link>
+              <Link href="/login" onClick={() => setMenuOpen(false)} className="md:hidden hover:text-blue-400 text-[14px] font-family-sora text-white transition-colors duration-300">LOG IN</Link>
+              <Link href="/signup" onClick={() => setMenuOpen(false)} className="md:hidden hover:text-blue-400 text-[14px] font-family-sora text-white transition-colors duration-300">SIGN UP</Link>
             </div>
           )}
         </div>
@@ -54,9 +56,31 @@ export default function Navbar() {
             </div>
           </Link>
           <div className="relative">
-            <button className='hidden md:block cursor-pointer'>
+            <button ref={accountButtonRef} onClick={() => setAccountOpen(!accountOpen)} className='hidden md:block cursor-pointer'>
               <Image src="/navbar/account.svg" alt="User" width={50} height={50} className='w-11 h-10' />
             </button>
+            {accountOpen && accountButtonRef.current && (
+              <div className="absolute top-15 right-0 h-[156px] w-[151px] border-[1px] border-[#00AEB9] bg-[#272E50] rounded-[10px] 
+              flex flex-col pt-[17px] pr-[39px] pb-[12px] pl-[11px]">
+                <h1 className='text-white text-[13px] font-family-sora font-semibold pb-[21px]'>Savvas</h1>
+                <Link href="/myaccount" onClick={() => setAccountOpen(false)}>
+                <div className="flex flex-row justify-start items-center gap-[9px] pb-[15px] cursor-pointer">
+                  <Image src="/myaccount/profile-icon.svg" alt="User" width={50} height={50} className='w-[18px] h-[18px]' />
+                  <div className="text-white text-[12px] font-regular font-family-sora">My Account</div>
+                </div>
+                </Link>
+                <Link href="/billing" onClick={() => setAccountOpen(false)}>
+                <div className="flex flex-row justify-start items-center gap-[9px] pb-[15px] cursor-pointer">
+                  <Image src="/myaccount/dollar-sign.svg" alt="User" width={50} height={50} className='w-[18px] h-[18px]' />
+                  <div className="text-white text-[12px] font-regular font-family-sora">Billing</div>
+                </div>
+                </Link>
+                <div className="flex flex-row justify-start items-center gap-[9px] cursor-pointer" onClick={() => setAccountOpen(false)}>
+                  <Image src="/myaccount/logout-icon.svg" alt="User" width={50} height={50} className='w-[18px] h-[18px]' />
+                  <div className="text-white text-[12px] font-regular font-family-sora">Log Out</div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

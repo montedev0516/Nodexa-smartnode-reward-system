@@ -36,7 +36,6 @@ export default function SmartnodesStats() {
             <h5 className="text-semibold text-[24px] text-[#B0B0B0]">$1,650</h5>
           </div>
         </div>
-
       </div>
       <div className="flex flex-wrap gap-[18px] pt-3 pb-5 xl:flex-nowrap xl:justify-between text-center">
         <div className="inline-block w-full p-[1px] bg-gradient-to-r from-[#1ec0ca] to-[#ec008c] rounded-[20px]">

@@ -13,7 +13,7 @@ export default function Dashboard() {
 
     return (
         <main className="min-h-screen bg-[#080525] text-white px-[20px] sm:px-[95px] pt-[60px]">
-            <div className="flex flex-row gap-[20px]">
+            <div className="flex flex-col xl:flex-row gap-[20px]">
                 <div className="flex flex-col justify-center items-start gap-[20px]">
                     <div className="text-[40px] font-semibold text-white font-family-sora">DASHBOARD</div>
                     <div
