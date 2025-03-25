@@ -28,7 +28,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        style={{ background: 'radial-gradient(70.4% 21.4% at 53.16% 33.22%, #1A459C 0%, #080525 100%)' }} 
       >
         <Navbar />
         {children}
@@ -37,3 +36,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+// style={{ background: 'radial-gradient(70.4% 21.4% at 53.16% 33.22%, #1A459C 0%, #080525 100%)' }} 

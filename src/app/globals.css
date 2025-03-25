@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #2631d3;
+  --background: #080525;
   --foreground: #171717;
 }
 
@@ -51,4 +51,130 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.status-active {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+
+  animation-name: statusActive;
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+}
+.status-syncing {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  animation-name: statusSyncing;
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+}
+.status-offline {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 10px;
+  animation-name: statusOffline;
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+.status-active-grad {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 10px;
+  
+  background: radial-gradient(
+    30.4% 30.4% at 53.16% 53.22%,
+    rgb(187, 255, 191) 0%,
+    rgb(139, 255, 146) 100%
+  );
+}
+.status-syncing-grad {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 10px;
+  
+  background: radial-gradient(
+    30.4% 30.4% at 53.16% 53.22%,
+    rgb(250, 221, 133) 0%,
+    rgb(255, 215, 95)100%
+  );
+}
+.status-offline-grad {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 10px;
+  
+  background: radial-gradient(
+    30.4% 30.4% at 53.16% 53.22%,
+    rgb(236, 72, 72) 0%,
+    rgb(238, 42, 32) 100%
+  );
+}
+
+@keyframes statusActive {
+  0% {
+    background: rgba(87, 240, 96, 1);
+    box-shadow: 0px 0px 8px 8px rgba(87, 240, 96, 0),
+      0 6px 20px 0 rgba(87, 240, 96, 0);
+  }
+
+  50% {
+    background: rgba(87, 240, 96, 0);
+    box-shadow: 0px 0px 8px 8px rgba(87, 240, 96, 0.2),
+      0 6px 20px 0 rgba(87, 240, 96, 0.39);
+  }
+
+  100% {
+    background: rgba(87, 240, 96, 1);
+    box-shadow: 0px 0px 8px 8px rgba(87, 240, 96, 0),
+      0 6px 20px 0 rgba(87, 240, 96, 0);
+  }
+}
+@keyframes statusSyncing {
+  0% {
+    background: rgba(255, 196, 13, 1);
+    box-shadow: 0px 0px 8px 8px rgba(255, 196, 13, 0),
+      0 6px 20px 0 rgba(255, 196, 13, 0);
+    
+  }
+
+  50% {
+    background: rgba(255, 196, 13, 0);
+    box-shadow: 0px 0px 8px 8px rgba(255, 196, 13, 0.2),
+      0 6px 20px 0 rgba(255, 196, 13, 0.39);
+    
+  }
+
+  100% {
+    background: rgba(255, 196, 13, 1);
+    box-shadow: 0px 0px 8px 8px rgba(255, 196, 13, 0),
+      0 6px 20px 0 rgba(255, 196, 13, 0);
+    
+  }
+}
+@keyframes statusOffline {
+  0% {
+    background-color: rgba(248, 22, 10, 1);
+
+    box-shadow: 0px 0px 8px 8px rgba(253, 59, 48, 0),
+      0 6px 20px 0 rgba(253, 59, 48, 0);
+  }
+
+  50% {
+    background-color: rgba(248, 22, 10, 0);
+    box-shadow: 0px 0px 8px 8px rgba(255, 43, 32, 0.4),
+      0 6px 20px 0 rgba(255, 43, 32, 0.58);
+  }
+
+  100% {
+    background-color: rgba(248, 22, 10, 1);
+    box-shadow: 0px 0px 8px 8px rgba(253, 59, 48, 0),
+      0 6px 20px 0 rgba(253, 59, 48, 0);
+  }
 }
