@@ -11,10 +11,12 @@
   "dependencies": {
     "@heroicons/react": "^1.0.6",
     "@prisma/client": "^6.5.0",
+    "@types/react-google-recaptcha": "^2.1.9",
     "bcryptjs": "^3.0.2",
     "next": "^15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-google-recaptcha": "^3.1.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
     "eslint-config-next": "15.2.1",
     "prisma": "^6.5.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }

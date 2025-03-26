@@ -90,6 +90,7 @@ export default function Login() {
             <div className="flex justify-center">
               <ReCaptcha 
                 onVerify={(token) => setRecaptchaToken(token)}
+                onExpire={() => setRecaptchaToken(null)}
                 theme="dark"
               />
             </div>
