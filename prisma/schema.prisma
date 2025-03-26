@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,14 +11,11 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String    @id @default(uuid())
   email         String    @unique
   password      String
+  verifyToken   String?
+  emailVerified DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  emailVerified DateTime?
-  verifyToken   String?   @unique
-  resetToken    String?   @unique
-  resetTokenExp DateTime?
-  isActive      Boolean   @default(true)
 } 

@@ -18,6 +18,18 @@ export default function SignUp() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
 
+  const [isVerified, setIsVerified] = useState(false);
+  const handleCaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+    // Clear recaptcha error if it exists
+    if (errors.recaptcha) {
+      setErrors(prev => ({
+        ...prev,
+        recaptcha: ''
+      }));
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -106,7 +118,7 @@ export default function SignUp() {
     // Redirect to login page after 3 seconds
     setTimeout(() => {
       router.push('/login');
-    }, 3000);
+    }, 4000);
   };
 
   if (isSuccess) {
@@ -205,10 +217,9 @@ export default function SignUp() {
             
             <div className="flex justify-center items-center">
               <ReCaptcha
-                onVerify={(token) => setRecaptchaToken(token)}
-                onExpire={() => setRecaptchaToken(null)}
+                onVerify={handleCaptchaChange}
                 theme="dark"
-                className="w-full"
+                className="w-full flex justify-center"
               />
             </div>
             {errors.recaptcha && (
