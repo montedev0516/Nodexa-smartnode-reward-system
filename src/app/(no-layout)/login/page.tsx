@@ -3,39 +3,103 @@
 import ReCaptcha from '@/utils/reCaptcha'
 import Link from 'next/link'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { z } from 'zod'
+
+// Validation schema
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
 
 export default function Login() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showResetPrompt, setShowResetPrompt] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.id]: e.target.value
+      [id]: value
     }));
+    // Clear error when user starts typing
+    if (errors[id]) {
+      setErrors(prev => ({ ...prev, [id]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    try {
+      loginSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: { [key: string]: string } = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!validateForm()) {
+      return;
+    }
+
     if (!recaptchaToken) {
-      alert('Please complete the reCAPTCHA verification');
+      setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
       return;
     }
 
     setIsSubmitting(true);
+    setShowResetPrompt(false);
+
     try {
-      // Add your login API call here
-      console.log('Form submitted:', { ...formData, recaptchaToken });
-      // Reset form after successful submission
-      setFormData({ email: '', password: '' });
-      setRecaptchaToken(null);
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          recaptchaToken,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.suggestReset) {
+          setShowResetPrompt(true);
+          return;
+        }
+        throw new Error(data.error || 'Login failed');
+      }
+
+      // TODO: Handle successful login (e.g., store token, redirect)
+      console.log('Login successful:', data);
+      router.push('/dashboard'); // Redirect to dashboard or home page
     } catch (error) {
       console.error('Login error:', error);
+      setErrors(prev => ({
+        ...prev,
+        submit: error instanceof Error ? error.message : 'An error occurred during login'
+      }));
     } finally {
       setIsSubmitting(false);
     }
@@ -62,10 +126,15 @@ export default function Login() {
                 id="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className={`w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                  errors.email ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter your email"
                 required
               />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
             <div>
               <label htmlFor="password" className="block text-[18px] font-bold py-[10px]">
@@ -76,16 +145,21 @@ export default function Login() {
                 id="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className={`w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
+                  errors.password ? 'border-red-500' : ''
+                }`}
                 placeholder="********"
                 required
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+              )}
             </div>
             <div className="flex flex-row justify-between items-center">
-                <p className="font-family-poppins text-[18px]">Forgot your password?</p>
-                <Link href="/reset-password" className="text-[#00AEB9] hover:text-blue-300">
-                   Reset Password
-                </Link>
+              <p className="font-family-poppins text-[18px]">Forgot your password?</p>
+              <Link href="/reset-password" className="text-[#00AEB9] hover:text-blue-300">
+                Reset Password
+              </Link>
             </div>
             <div className="flex justify-center">
               <ReCaptcha 
@@ -94,6 +168,23 @@ export default function Login() {
                 theme="dark"
               />
             </div>
+            {errors.recaptcha && (
+              <p className="text-red-500 text-sm text-center">{errors.recaptcha}</p>
+            )}
+            {errors.submit && (
+              <p className="text-red-500 text-sm text-center">{errors.submit}</p>
+            )}
+            {showResetPrompt && (
+              <div className="bg-blue-900/50 p-4 rounded-lg text-center">
+                <p className="mb-2">Would you like to reset your password?</p>
+                <Link 
+                  href="/reset-password" 
+                  className="text-[#00AEB9] hover:text-blue-300 underline"
+                >
+                  Reset Password
+                </Link>
+              </div>
+            )}
             <div className="flex justify-center items-center pt-[20px]">
               <button
                 type="submit"
