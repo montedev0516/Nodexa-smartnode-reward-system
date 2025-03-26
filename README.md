@@ -1,8 +1,13 @@
 # Nodexa smartnodes reward system
 
-``
-  npm run dev
+Install:
 
-  npm run start
+```bash
+npm install
+```
 
-``
+Run in development:
+
+```bash
+npm run dev
+```
