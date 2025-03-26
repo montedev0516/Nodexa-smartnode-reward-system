@@ -11,11 +11,13 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  password      String
-  verifyToken   String?
-  emailVerified DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String
+  verifyToken     String?   @unique
+  emailVerified   Boolean   @default(false)
+  resetToken      String?   @unique
+  resetTokenExpiry DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 } 
