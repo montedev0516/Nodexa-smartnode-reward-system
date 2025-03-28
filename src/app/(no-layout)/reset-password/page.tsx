@@ -2,6 +2,12 @@
 
 import { useState } from 'react';
 import ReCaptcha from '@/utils/reCaptcha';
+import ShowResetVerificationModal from '@/components/ShowResetVerificationModal';
+import { z } from 'zod';
+
+const resetPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
 
 export default function ResetPassword() {
   const [email, setEmail] = useState('');
@@ -9,6 +15,7 @@ export default function ResetPassword() {
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showResetVerificationModal, setShowResetVerificationModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -21,45 +28,104 @@ export default function ResetPassword() {
     }
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  // const validateForm = () => {
+  //   const newErrors: Record<string, string> = {};
     
-    if (!email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
+  //   if (!email) {
+  //     newErrors.email = 'Email is required';
+  //   } else if (!/\S+@\S+\.\S+/.test(email)) {
+  //     newErrors.email = 'Please enter a valid email';
+  //   }
 
+  //   if (!recaptchaToken) {
+  //     newErrors.recaptcha = 'Please complete the reCAPTCHA verification';
+  //   }
+
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
+
+  const validateForm = () => {
     if (!recaptchaToken) {
-      newErrors.recaptcha = 'Please complete the reCAPTCHA verification';
+      setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
+      return false;
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    try {
+      resetPasswordSchema.parse({ email });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: { [key: string]: string } = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
   };
+  
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) return;
 
+    if (!recaptchaToken) {
+      setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       // TODO: Implement your reset password API call here
+      const response = await fetch('api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          recaptchaToken,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ||'Failed to reset password');
+      }
+
+      // Show verification modal instead of success message
+      setShowResetVerificationModal(true);
+      
       console.log('Reset password requested for:', { email, recaptchaToken });
       
       // Simulate success
-      setIsSuccess(true);
+      // setIsSuccess(true);
     } catch (error) {
       console.error('Reset password error:', error);
       setErrors(prev => ({
         ...prev,
-        submit: 'Failed to reset password. Please try again.'
+        submit: error instanceof Error ? error.message : 'Failed to reset password. Please try again.'
       }));
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // const handleResetVerificationComplete = () => {
+  //   setShowResetVerificationModal(false);
+  //   setIsSuccess(true);
+  //   // Redirect to login page after 3 seconds
+  //   setTimeout(() => {
+  //     router.push('/login');
+  //   }, 4000);
+  // };
 
   if (isSuccess) {
     return (
@@ -113,6 +179,7 @@ export default function ResetPassword() {
                   errors.email ? 'border-red-500' : ''
                 }`}
                 placeholder="Enter your email"
+                required
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
@@ -134,9 +201,9 @@ export default function ResetPassword() {
             <div className="flex justify-center items-center pt-[20px]">
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !recaptchaToken}
                 className={`w-[300px] h-[50px] bg-gradient-to-b from-[#F091C9] to-[#EC008C] font-family-sora text-[25px] text-white py-3 rounded-[45px] transition-colors text-center flex justify-center items-center ${
-                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:opacity-90'
+                  (isSubmitting || !recaptchaToken) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:opacity-90'
                 }`}
               >
                 {isSubmitting ? 'Sending...' : 'Reset Password'}
@@ -148,6 +215,12 @@ export default function ResetPassword() {
           </form>
         </div>
       </div>
+
+      <ShowResetVerificationModal
+        isOpen={showResetVerificationModal}
+        onClose={() => setShowResetVerificationModal(false)}
+      />
+       
     </main>
   );
 } 

@@ -4,6 +4,7 @@ import ReCaptcha from '@/utils/reCaptcha'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { z } from 'zod'
 
 // Validation schema
@@ -70,30 +71,22 @@ export default function Login() {
     setShowResetPrompt(false);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          recaptchaToken,
-        }),
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.suggestReset) {
+      if (result?.error) {
+        if (result.error.includes('verify your email')) {
           setShowResetPrompt(true);
           return;
         }
-        throw new Error(data.error || 'Login failed');
+        throw new Error(result.error);
       }
 
-      // TODO: Handle successful login (e.g., store token, redirect)
-      console.log('Login successful:', data);
-      router.push('/dashboard'); // Redirect to dashboard or home page
+      // Successful login
+      router.push('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       setErrors(prev => ({
@@ -166,6 +159,7 @@ export default function Login() {
                 onVerify={(token) => setRecaptchaToken(token)}
                 onExpire={() => setRecaptchaToken(null)}
                 theme="dark"
+                className="w-full flex justify-center"
               />
             </div>
             {errors.recaptcha && (
@@ -195,6 +189,9 @@ export default function Login() {
               >
                 {isSubmitting ? 'Logging in...' : 'Login'}
               </button>
+            </div>
+            <div className="flex justify-center items-center pt-[20px]">
+              <p className="font-family-poppins text-[18px] flex gap-10">Don't have an account? <Link href="/signup" className="text-[#00AEB9] hover:text-blue-300 underline">Sign up</Link></p>
             </div>
           </form>
         </div>

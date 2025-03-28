@@ -3,14 +3,14 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 interface ReCaptchaProps {
   onVerify: (token: string | null) => void;
-  // onExpire?: () => void;
+  onExpire?: () => void;
   theme?: 'light' | 'dark';
   className?: string;
 }
 
 export default function ReCaptcha({
   onVerify,
-  // onExpire,
+  onExpire,
   theme = 'light',
   className = '',
 }: ReCaptchaProps) {
@@ -19,7 +19,7 @@ export default function ReCaptcha({
       <ReCAPTCHA
         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
         onChange={onVerify}
-        // onExpired={() => onExpire?.()}
+        onExpired={() => onExpire?.()}
         theme={theme}
       />
     </div>
