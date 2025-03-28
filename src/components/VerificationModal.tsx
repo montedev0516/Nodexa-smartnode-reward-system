@@ -13,38 +13,35 @@ export default function VerificationModal({
   email,
   onVerificationComplete,
 }: VerificationModalProps) {
-  const [verificationCode, setVerificationCode] = React.useState('');
+  const [isResending, setIsResending] = React.useState(false);
   const [error, setError] = React.useState('');
-  const [isVerifying, setIsVerifying] = React.useState(false);
+  const [success, setSuccess] = React.useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsVerifying(true);
+  const handleResend = async () => {
+    setIsResending(true);
     setError('');
+    setSuccess('');
 
     try {
-      const response = await fetch('/api/auth/verify-email', {
+      const response = await fetch('/api/auth/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email,
-          code: verificationCode,
-        }),
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Verification failed');
+        throw new Error(data.error || 'Failed to resend verification email');
       }
 
-      onVerificationComplete();
+      setSuccess('Verification email has been resent successfully');
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Verification failed');
+      setError(error instanceof Error ? error.message : 'Failed to resend verification email');
     } finally {
-      setIsVerifying(false);
+      setIsResending(false);
     }
   };
 
@@ -53,48 +50,36 @@ export default function VerificationModal({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-[#1C1840] p-8 rounded-lg w-[90%] max-w-md">
-        <h2 className="text-2xl font-bold text-white mb-4">Verify Your Email</h2>
+        <h2 className="text-2xl font-bold text-white mb-4">Email Verification</h2>
         <p className="text-gray-300 mb-6">
-          We've sent a verification code to {email}. Please enter it below.
+          Thanks for Signing Up! We have sent a verification link to your email. Please check your inbox/spam messages and click the link to complete the sign-up process. If you have not received email please press Resend button.
         </p>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="verificationCode" className="block text-sm font-medium text-gray-300 mb-1">
-              Verification Code
-            </label>
-            <input
-              type="text"
-              id="verificationCode"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-              className="w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-white"
-              placeholder="Enter verification code"
-              required
-            />
-          </div>
+        {error && (
+          <p className="text-red-500 text-sm mb-4">{error}</p>
+        )}
+        
+        {success && (
+          <p className="text-green-500 text-sm mb-4">{success}</p>
+        )}
 
-          {error && (
-            <p className="text-red-500 text-sm">{error}</p>
-          )}
-
-          <div className="flex justify-end space-x-4 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-300 hover:text-white"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isVerifying}
-              className="px-4 py-2 bg-gradient-to-b from-[#F091C9] to-[#EC008C] text-white rounded-lg hover:opacity-90 disabled:opacity-50"
-            >
-              {isVerifying ? 'Verifying...' : 'Verify'}
-            </button>
-          </div>
-        </form>
+        <div className="flex justify-end space-x-4 mt-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 text-gray-300 hover:text-white"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={isResending}
+            className="px-4 py-2 bg-gradient-to-b from-[#F091C9] to-[#EC008C] text-white rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            {isResending ? 'Sending...' : 'Resend'}
+          </button>
+        </div>
       </div>
     </div>
   );
