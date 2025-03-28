@@ -18,7 +18,7 @@ export default function SignUp() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
 
-  const [isVerified, setIsVerified] = useState(false);
+  // const [isVerified, setIsVerified] = useState(false);
   const handleCaptchaChange = (token: string | null) => {
     setRecaptchaToken(token);
     // Clear recaptcha error if it exists
@@ -80,6 +80,8 @@ export default function SignUp() {
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    // setIsSuccess(true);
+    // setShowVerificationModal(true);
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',

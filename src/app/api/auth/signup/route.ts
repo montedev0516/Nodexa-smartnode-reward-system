@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { verifyRecaptcha } from '@/utils/recaptchaUtils';
+import { sendVerificationEmail } from '@/utils/email';
 
 // Validation schema
 const signupSchema = z.object({
@@ -42,8 +43,9 @@ export async function POST(request: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 
-    // Generate verification token
+    // Generate verification token with expiry
     const verifyToken = crypto.randomUUID();
+    const verifyTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
     // Create user
     const user = await prisma.user.create({
@@ -51,15 +53,17 @@ export async function POST(request: Request) {
         email: validatedData.email,
         password: hashedPassword,
         verifyToken,
+        verifyTokenExpiry,
       },
     });
 
-    // TODO: Send verification email
-    // await sendVerificationEmail(user.email, verifyToken);
+    // Send verification email
+    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email/${verifyToken}`;
+    await sendVerificationEmail(user.email, verificationUrl);
 
     return NextResponse.json(
       { 
-        message: 'User created successfully',
+        message: 'User created successfully. Please check your email to verify your account.',
         userId: user.id,
         email: user.email,
       },
