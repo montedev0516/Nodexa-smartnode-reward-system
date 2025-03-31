@@ -116,7 +116,7 @@ export default function SignUp() {
 
     setIsSubmitting(true);
     // setIsSuccess(true);
-    setShowVerificationModal(true);
+    // setShowVerificationModal(true);
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
