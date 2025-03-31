@@ -1,9 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';  
+import { useRouter, useSearchParams } from 'next/navigation';
 import ReCaptcha from '@/utils/reCaptcha';
+import { z } from 'zod';
+
+const newPasswordSchema = z.object({
+  password: z.string().min(8),
+  confirmPassword: z.string().min(8),
+  recaptchaToken: z.string().min(1),
+})
 
 export default function NewPassword() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+
+  useEffect(() => {
+    if (!token) {
+      router.push('/reset-password');
+    }
+  }, [token, router]);
+
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: '',
@@ -29,26 +47,27 @@ export default function NewPassword() {
   };
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
     if (!recaptchaToken) {
-      newErrors.recaptcha = 'Please complete the reCAPTCHA verification';
+      setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCaptcha verification' }));
+      return false;
     }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    try {
+      newPasswordSchema.parse(formData);
+      console.log('Form data is valid:', newPasswordSchema.parse(formData));
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: { [key: string]: string } = {};
+        error.errors.forEach(err => {
+          if (err.path[0]) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -56,50 +75,51 @@ export default function NewPassword() {
     
     if (!validateForm()) return;
 
+    if (!recaptchaToken) {
+      setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCaptcha verification' }));
+      return;
+    }
+
+    if (!token) {
+      setErrors(prev => ({ ...prev, submit: 'Invalid reset token' }));
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      // TODO: Implement your new password API call here
-      console.log('Setting new password:', { ...formData, recaptchaToken });
+      const response = await fetch('/api/auth/new-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...formData, recaptchaToken, token }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to set new password');
+      }
       
-      // Simulate success
       setIsSuccess(true);
+
+      // Redirect to login page after 3 seconds
+      console.log('Redirecting to login page...');
+      if (isSuccess) {
+        setTimeout(() => {
+          router.push('/login');
+        }, 3000);
+      }
     } catch (error) {
       console.error('Set new password error:', error);
       setErrors(prev => ({
         ...prev,
-        submit: 'Failed to set new password. Please try again.'
+        submit: error instanceof Error ? error.message : 'Failed to set new password. Please try again.'
       }));
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  if (isSuccess) {
-    return (
-      <main className="min-h-screen bg-[#080525] text-white px-[20px] sm:px-[100px] py-[130px]">
-        <div className="flex flex-col justify-center items-center">
-          <div className="w-full pt-[10px] pb-[10px] text-center">
-            <h1 className="text-[48px] font-family-sora font-semibold text-center">Password Updated</h1>
-          </div>
-          <div className="w-full py-[10px]">
-            <div className="bg-gradient-to-r from-[#00AEB900] via-[#00AEB9] to-[#00AEB900] from-[0%] via-[50%] to-[100%] h-[2px] w-full">
-            </div>
-          </div>
-          <div className="w-[300px] sm:w-[527px] py-[100px] text-center">
-            <p className="text-[18px] mb-6">
-              Your password has been successfully updated.
-            </p>
-            <button
-              onClick={() => setIsSuccess(false)}
-              className="w-[200px] h-[50px] bg-gradient-to-b from-[#F091C9] to-[#EC008C] font-family-sora text-[25px] text-white py-3 rounded-[45px] transition-colors text-center flex justify-center items-center cursor-pointer hover:opacity-90"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="min-h-screen bg-[#080525] text-white px-[20px] sm:px-[100px] py-[130px]">

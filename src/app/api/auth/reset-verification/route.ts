@@ -36,7 +36,7 @@ export async function GET(
         });
 
         //Redirect to login page with success message
-        return NextResponse.redirect(new URL('http://46.4.5.53:3000/new-password?verified=true', request.url));
+        return NextResponse.redirect(new URL(`http://46.4.5.53:3000/new-password?token=${token}`, request.url));
 
     } catch (error) {
         console.error('Email verification error:', error);
