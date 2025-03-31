@@ -6,15 +6,16 @@ import ReCaptcha from '@/utils/reCaptcha';
 import { z } from 'zod';
 
 const newPasswordSchema = z.object({
-  password: z.string().min(8),
-  confirmPassword: z.string().min(8),
-  recaptchaToken: z.string().min(1),
+  password: z.string().min(8, 'password is required!'),
+  confirmPassword: z.string().min(8, 'confirm password is required!'),
 })
 
 export default function NewPassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+
+  console.log("token", token);
 
   useEffect(() => {
     if (!token) {
@@ -86,13 +87,15 @@ export default function NewPassword() {
     }
 
     setIsSubmitting(true);
+
+    console.log("here, here!");
     try {
       const response = await fetch('/api/auth/new-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, recaptchaToken, token }),
+        body: JSON.stringify({ ...formData, token, recaptchaToken }),
       });
 
       const data = await response.json();
@@ -105,11 +108,9 @@ export default function NewPassword() {
 
       // Redirect to login page after 3 seconds
       console.log('Redirecting to login page...');
-      if (isSuccess) {
-        setTimeout(() => {
-          router.push('/login');
-        }, 3000);
-      }
+
+      router.push('/login');
+      
     } catch (error) {
       console.error('Set new password error:', error);
       setErrors(prev => ({
@@ -147,6 +148,7 @@ export default function NewPassword() {
                   errors.password ? 'border-red-500' : ''
                 }`}
                 placeholder="Enter new password"
+                required
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-500">{errors.password}</p>
@@ -166,6 +168,7 @@ export default function NewPassword() {
                   errors.confirmPassword ? 'border-red-500' : ''
                 }`}
                 placeholder="Confirm new password"
+                required
               />
               {errors.confirmPassword && (
                 <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
@@ -187,9 +190,9 @@ export default function NewPassword() {
             <div className="flex justify-center items-center pt-[20px]">
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !recaptchaToken}
                 className={`w-[200px] h-[50px] bg-gradient-to-b from-[#F091C9] to-[#EC008C] font-family-sora text-[25px] text-white py-3 rounded-[45px] transition-colors text-center flex justify-center items-center ${
-                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:opacity-90'
+                  (isSubmitting || !recaptchaToken) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:opacity-90'
                 }`}
               >
                 {isSubmitting ? 'Setting...' : 'Set'}

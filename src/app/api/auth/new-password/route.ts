@@ -5,10 +5,10 @@ import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 const newPasswordSchema = z.object({
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-    recaptchaToken: z.string().min(1),
-    token: z.string().min(1),
+    password: z.string().min(8, 'password is required!'),
+    confirmPassword: z.string().min(8, 'confirmpassword is required!'),
+    recaptchaToken: z.string().min(1, 'reCAPTCHA verification is required'),
+    token: z.string().min(1, 'token is required!'),
 });
 
 export async function POST(request: NextRequest) {
@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
         const validatedData = newPasswordSchema.parse(body);
         
         const { password, confirmPassword, recaptchaToken, token } = validatedData;
-
+        
+        console.log("validate", validatedData);
         // Verify passwords match
         if (password !== confirmPassword) {
             return NextResponse.json(
@@ -51,6 +52,8 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        console.log("target user credential", user);
+
         // Hash new password
         const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -64,9 +67,10 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return NextResponse.json({
-            message: 'Password updated successfully'
-        });
+        return NextResponse.json(
+            { message: 'Password updated successfully' },
+            { status:  200 }
+        );
     } catch (error) {
         console.error('New password error:', error);
         
