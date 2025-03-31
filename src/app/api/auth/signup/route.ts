@@ -40,6 +40,8 @@ export async function POST(request: Request) {
       );
     }
 
+    // console.log("existingUser", existingUser);
+
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 

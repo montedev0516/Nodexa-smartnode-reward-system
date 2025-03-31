@@ -176,13 +176,7 @@ export default function Login() {
             )}
             {showResetPrompt && (
               <div className="bg-blue-900/50 p-4 rounded-lg text-center">
-                <p className="mb-2">Would you like to reset your password?</p>
-                <Link 
-                  href="/reset-password" 
-                  className="text-[#00AEB9] hover:text-blue-300 underline"
-                >
-                  Reset Password
-                </Link>
+                <p className="mb-2">Login Failed!</p>
               </div>
             )}
             <div className="flex justify-center items-center pt-[20px]">
