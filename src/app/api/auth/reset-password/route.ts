@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         });
 
         // Send reset password email    
-        const resetUrl = `${process.env.NODEXA_PUBLIC_APP_URL}/api/auth/reset-verification?${resetToken}`;
+        const resetUrl = `${process.env.NODEXA_PUBLIC_APP_URL}/api/auth/reset-verification?token=${resetToken}`;
         await sendVerificationEmail(user.email, resetUrl);
 
         return NextResponse.json(
