@@ -40,17 +40,20 @@ export async function POST(request: Request) {
         }
 
         // Generate reset password token
-        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetToken = crypto.randomUUID();
         const resetPasswordTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
         // Save reset token to database
         await prisma.user.update({
             where: { id: user.id },
-            data: { resetPasswrdToken: resetToken, resetPasswordTokenExpiry: resetPasswordTokenExpiry },
+            data: { 
+                resetPasswordToken: resetToken, 
+                resetPasswordTokenExpiry: resetPasswordTokenExpiry 
+            },
         });
 
         // Send reset password email    
-        const resetUrl = `${process.env.NODEXA_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
+        const resetUrl = `${process.env.NODEXA_PUBLIC_APP_URL}/api/auth/reset-verification?${resetToken}`;
         await sendVerificationEmail(user.email, resetUrl);
 
         return NextResponse.json(

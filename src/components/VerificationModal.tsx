@@ -57,13 +57,13 @@ export default function VerificationModal({
         <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">Please check your inbox/spam messages and click the link to</p>
         <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[15px]">complete the sign-up process.</p>
         <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[10px]">If you have not received email please press Resend button.</p>
-        {error && (
+        {/* {error && (
           <p className="text-red-500 text-sm mb-4">{error}</p>
-        )}
+        )} */}
         
-        {success && (
+        {/* {success && (
           <p className="text-green-500 text-sm mb-4">{success}</p>
-        )}
+        )} */}
 
         <div className="flex justify-center space-x-4">
           {/* <button
