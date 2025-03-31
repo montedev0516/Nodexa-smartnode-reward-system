@@ -28,23 +28,6 @@ export default function ResetPassword() {
     }
   };
 
-  // const validateForm = () => {
-  //   const newErrors: Record<string, string> = {};
-    
-  //   if (!email) {
-  //     newErrors.email = 'Email is required';
-  //   } else if (!/\S+@\S+\.\S+/.test(email)) {
-  //     newErrors.email = 'Please enter a valid email';
-  //   }
-
-  //   if (!recaptchaToken) {
-  //     newErrors.recaptcha = 'Please complete the reCAPTCHA verification';
-  //   }
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
-
   const validateForm = () => {
     if (!recaptchaToken) {
       setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
@@ -68,8 +51,6 @@ export default function ResetPassword() {
     }
   };
   
-  
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
