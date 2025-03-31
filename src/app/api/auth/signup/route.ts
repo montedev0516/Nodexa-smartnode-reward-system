@@ -57,8 +57,10 @@ export async function POST(request: Request) {
       },
     });
 
+    console.log("User created successfully");
+
     // Send verification email
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email/${verifyToken}`;
+    const verificationUrl = `${process.env.NODEXA_PUBLIC_APP_URL}/api/auth/verify-email/${verifyToken}`;
     await sendVerificationEmail(user.email, verificationUrl);
 
     return NextResponse.json(
