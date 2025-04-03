@@ -2,8 +2,8 @@
 
 import ReCaptcha from '@/utils/reCaptcha'
 import Link from 'next/link'
-import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import ReCAPTCHA from 'react-google-recaptcha'
 
@@ -15,6 +15,8 @@ const loginSchema = z.object({
 
 export default function Login() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('from') || '/dashboard';
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState({
     email: '',
@@ -95,9 +97,9 @@ export default function Login() {
         throw new Error(data.error || 'Login failed');
       }
 
-      // TODO: Handle successful login (e.g., store token, redirect)
+      // Handle successful login
       console.log('Login successful:', data);
-      router.push('/dashboard'); // Redirect to dashboard or home page
+      router.push(redirectTo); // Redirect to the requested page or dashboard
     } catch (error) {
       console.error('Login error:', error);
       setErrors(prev => ({

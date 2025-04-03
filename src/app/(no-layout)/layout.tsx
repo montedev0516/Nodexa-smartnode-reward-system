@@ -6,18 +6,16 @@ export const metadata: Metadata = {
   description: "nodexa smartnodes rewards system",
 };
 
-export default function RootLayout({
+export default function NoLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        {/* <Navbar /> */}
-        {children}
-        {/* <Footer /> */}
-      </body>
-    </html>
+    <>
+      {/* <Navbar /> */}
+      {children}
+      {/* <Footer /> */}
+    </>
   );
 }

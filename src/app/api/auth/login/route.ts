@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { verifyRecaptcha } from '@/utils/recaptchaUtils';
+import { cookies } from 'next/headers';
 
 // Validation schema
 const loginSchema = z.object({
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
     if (!isRecaptchaValid) {
       return NextResponse.json(
-        { error: 'Invalid reCAPTCHA verification' },
+        { error: 'Invalid reCAPTCHA' },
         { status: 400 }
       );
     }
@@ -81,6 +82,19 @@ export async function POST(request: Request) {
 
     // TODO: Generate JWT token or session
     // For now, just return success
+    const token = 'mock-auth-token';
+
+    // Set the authentication cookie
+    const cookieStore = await cookies();
+    cookieStore.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      // Set expiration to 7 days
+      maxAge: 7 * 24 * 60 * 60
+    });
+
     return NextResponse.json({
       message: 'Login successful',
       user: {
