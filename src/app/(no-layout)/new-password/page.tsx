@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';  
+import { useState, useEffect, useRef } from 'react';  
 import { useRouter, useSearchParams } from 'next/navigation';
 import ReCaptcha from '@/utils/reCaptcha';
 import { z } from 'zod';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const newPasswordSchema = z.object({
   password: z.string().min(8, 'password is required!'),
@@ -14,6 +15,7 @@ export default function NewPassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   console.log("token", token);
 
@@ -101,6 +103,9 @@ export default function NewPassword() {
       const data = await response.json();
 
       if (!response.ok) {
+        // Reset reCAPTCHA on error
+        recaptchaRef.current?.reset();
+        setRecaptchaToken(null);
         throw new Error(data.error || 'Failed to set new password');
       }
       
@@ -177,6 +182,7 @@ export default function NewPassword() {
             
             <div className="flex justify-center items-center">
               <ReCaptcha
+                ref={recaptchaRef}
                 onVerify={(token) => setRecaptchaToken(token)}
                 onExpire={() => setRecaptchaToken(null)}
                 theme="dark"

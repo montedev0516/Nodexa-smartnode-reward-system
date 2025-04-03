@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import ReCaptcha from '@/utils/reCaptcha';
 import VerificationModal from '@/components/VerificationModal';
 import { z } from 'zod'
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const signupSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -14,6 +15,7 @@ const signupSchema = z.object({
 
 export default function SignUp() {
   const router = useRouter();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -86,8 +88,6 @@ export default function SignUp() {
     }
 
     setIsSubmitting(true);
-    // setIsSuccess(true);
-    // setShowVerificationModal(true);
     try {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -104,6 +104,9 @@ export default function SignUp() {
       const data = await response.json();
 
       if (!response.ok) {
+        // Reset reCAPTCHA on error
+        recaptchaRef.current?.reset();
+        setRecaptchaToken(null);
         throw new Error(data.error || 'Failed to sign up');
       }
 
@@ -228,6 +231,7 @@ export default function SignUp() {
             
             <div className="flex justify-center items-center">
               <ReCaptcha
+                ref={recaptchaRef}
                 onVerify={handleCaptchaChange}
                 theme="dark"
                 className="w-full flex justify-center"
