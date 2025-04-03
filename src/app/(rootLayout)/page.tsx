@@ -1,7 +1,7 @@
 "use client"
 
 import Display from '@/components/Display';
-import JoinUs from '@/components/JoinUs';
+import JoinUs from '@/components/JoinUS';
 import Neoxa from '@/components/Neoxa';
 import SmartnodesStats from '@/components/SmartnodesStats';
 
@@ -18,4 +18,4 @@ export default function Home() {
       <JoinUs />
     </main>
   )
-}
+} 

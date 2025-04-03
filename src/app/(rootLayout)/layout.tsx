@@ -3,7 +3,6 @@ import "@/app/globals.css";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ProtectedLayout from '@/components/ProtectedLayout';
 
 export const metadata: Metadata = {
   title: "Nodexa Hosting",
@@ -17,12 +16,9 @@ export default function MainLayout({
 }>) {
   return (
     <>
-
-      <ProtectedLayout>
-        <Navbar />
+      <Navbar />
         {children}
-        <Footer />
-      </ProtectedLayout>
+      <Footer />
     </>
   );
 }
