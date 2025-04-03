@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import ReCaptcha from '@/utils/reCaptcha';
 import ShowResetVerificationModal from '@/components/ShowResetVerificationModal';
 import { z } from 'zod';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const resetPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
 export default function ResetPassword() {
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
@@ -63,7 +65,6 @@ export default function ResetPassword() {
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement your reset password API call here
       const response = await fetch('api/auth/reset-password', {
         method: 'POST',
         headers: {
@@ -78,6 +79,9 @@ export default function ResetPassword() {
       const data = await response.json();
 
       if (!response.ok) {
+        // Reset reCAPTCHA on error
+        recaptchaRef.current?.reset();
+        setRecaptchaToken(null);
         throw new Error(data.error ||'Failed to reset password');
       }
 
@@ -85,9 +89,6 @@ export default function ResetPassword() {
       setShowResetVerificationModal(true);
       
       console.log('Reset password requested for:', { email, recaptchaToken });
-      
-      // Simulate success
-      // setIsSuccess(true);
     } catch (error) {
       console.error('Reset password error:', error);
       setErrors(prev => ({
@@ -169,6 +170,7 @@ export default function ResetPassword() {
             
             <div className="flex justify-center items-center">
               <ReCaptcha
+                ref={recaptchaRef}
                 onVerify={(token) => setRecaptchaToken(token)}
                 onExpire={() => setRecaptchaToken(null)}
                 theme="dark"

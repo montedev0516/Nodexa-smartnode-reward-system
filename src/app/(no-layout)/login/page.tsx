@@ -2,9 +2,10 @@
 
 import ReCaptcha from '@/utils/reCaptcha'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 // Validation schema
 const loginSchema = z.object({
@@ -14,6 +15,7 @@ const loginSchema = z.object({
 
 export default function Login() {
   const router = useRouter();
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -86,8 +88,10 @@ export default function Login() {
       if (!response.ok) {
         if (data.suggestReset) {
           setShowResetPrompt(true);
-          return;
         }
+        // Reset reCAPTCHA on any error
+        recaptchaRef.current?.reset();
+        setRecaptchaToken(null);
         throw new Error(data.error || 'Login failed');
       }
 
@@ -163,6 +167,7 @@ export default function Login() {
             </div>
             <div className="flex justify-center">
               <ReCaptcha 
+                ref={recaptchaRef}
                 onVerify={(token) => setRecaptchaToken(token)}
                 onExpire={() => setRecaptchaToken(null)}
                 theme="dark"

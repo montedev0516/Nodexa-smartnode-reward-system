@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 interface ReCaptchaProps {
@@ -8,15 +8,16 @@ interface ReCaptchaProps {
   className?: string;
 }
 
-export default function ReCaptcha({
+const ReCaptcha = forwardRef<ReCAPTCHA, ReCaptchaProps>(({
   onVerify,
   onExpire,
   theme = 'light',
   className = '',
-}: ReCaptchaProps) {
+}, ref) => {
   return (
     <div className={className}>
       <ReCAPTCHA
+        ref={ref}
         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
         onChange={onVerify}
         onExpired={() => onExpire?.()}
@@ -24,4 +25,8 @@ export default function ReCaptcha({
       />
     </div>
   );
-} 
+});
+
+ReCaptcha.displayName = 'ReCaptcha';
+
+export default ReCaptcha; 
