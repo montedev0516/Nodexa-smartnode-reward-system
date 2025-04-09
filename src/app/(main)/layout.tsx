@@ -17,7 +17,6 @@ export default function MainLayout({
 }>) {
   return (
     <>
-
       <ProtectedLayout>
         <Navbar />
         {children}

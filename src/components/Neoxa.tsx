@@ -95,7 +95,7 @@ export default function Neoxa() {
 
     const interval = setInterval(
       fetchNeoxaPriceDataFromCoinMarketCap,
-      1000 * 60 * 1 // 1 minutes
+      1000 * 60 * 5 // 5 minutes
     );
 
     return () => clearInterval(interval);
@@ -103,7 +103,7 @@ export default function Neoxa() {
 
   const formatNumber = (value: number) => {
     return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 7,
+      minimumFractionDigits: 2,
       // maximumFractionDigits: 2,
     }).format(value);
   }
