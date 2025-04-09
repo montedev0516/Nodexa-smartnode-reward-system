@@ -197,6 +197,10 @@ export default function Login() {
                 {isSubmitting ? 'Logging in...' : 'Login'}
               </button>
             </div>
+            <div className="flex justify-center items-center gap-[20px] pt-[20px]">
+              <p className="font-family-poppins text-[18px]">Don't have an account?</p>
+              <Link href="/signup" className="text-[#00AEB9] hover:text-blue-300">Sign Up</Link>
+            </div>
           </form>
         </div>
       </div>

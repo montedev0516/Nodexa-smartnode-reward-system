@@ -4,6 +4,7 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { verifyRecaptcha } from '@/utils/recaptchaUtils';
 import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
 // Validation schema
 const loginSchema = z.object({
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: 'Account not registered' },
         { status: 401 }
       );
     }
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
 
       return NextResponse.json(
         { 
-          error: 'Invalid email or password',
+          error: 'Password is incorrect',
           suggestReset: true,
           message: 'Would you like to reset your password?'
         },
@@ -80,9 +81,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: Generate JWT token or session
-    // For now, just return success
-    const token = 'mock-auth-token';
+    // Generate JWT token
+    const secret = process.env.JWT_SECRET || 'your-secret-key';
+    const token = jwt.sign(
+      { 
+        userId: user.id,
+        email: user.email
+      },
+      secret,
+      { expiresIn: '7d' }
+    );
 
     // Set the authentication cookie
     const cookieStore = await cookies();
@@ -99,10 +107,9 @@ export async function POST(request: Request) {
       message: 'Login successful',
       user: {
         id: user.id,
-        email: user.email,
-      },
+        email: user.email
+      }
     });
-
   } catch (error) {
     console.error('Login error:', error);
     
