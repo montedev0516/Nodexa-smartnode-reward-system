@@ -37,7 +37,10 @@ export async function GET(request: NextRequest) {
         if (authToken) {
             try {
                 // Verify the JWT token
-                const secret = process.env.JWT_SECRET || 'your-secret-key';
+                const secret = process.env.JWT_SECRET;
+                if (!secret) {
+                    throw new Error("JWT_SECRET is not defined");
+                }
                 const decoded = jwt.verify(authToken, secret) as { userId: string; email: string };
                 
                 console.log("Using custom auth token for user:", decoded.userId);
@@ -88,7 +91,10 @@ export async function PUT(request: NextRequest) {
         if (authToken) {
             try {
                 // Verify the JWT token
-                const secret = process.env.JWT_SECRET || 'your-secret-key';
+                const secret = process.env.JWT_SECRET;
+                if (!secret) {
+                    throw new Error("not secret key!")
+                }
                 const decoded = jwt.verify(authToken, secret) as { userId: string; email: string };
                 userId = decoded.userId;
             } catch (error) {

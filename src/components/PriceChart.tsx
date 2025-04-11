@@ -48,7 +48,7 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
   // Determine the time format for X axis based on the selected range
   const getTimeFormat = () => {
     switch (timeRange) {
-      case '10H':
+      case '1H':
         return 'h:mm a'; // Hours:minutes AM/PM
       case '1D':
         return 'h:mm a'; // Hours:minutes AM/PM
@@ -73,7 +73,7 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
     if (length === 0) return 0;
     
     switch (timeRange) {
-      case '10H':
+      case '1H':
         return Math.floor(length / 5); // ~5 ticks (every 2 hours)
       case '1D':
         return Math.floor(length / 6); // ~6 ticks (every 4 hours)
@@ -173,7 +173,7 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
             tick={{ fontSize: 12, fill: "#8B94A3" }}
             axisLine={{ stroke: "#2F3747" }}
             tickLine={{ stroke: "#2F3747" }}
-            orientation="left"
+            orientation="right"
             padding={{ top: 10, bottom: 10 }}
           />
           <CartesianGrid strokeDasharray="3 3" stroke="#2F3747" opacity={0.3} />

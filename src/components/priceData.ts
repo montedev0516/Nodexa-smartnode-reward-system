@@ -79,7 +79,7 @@ export const getDataForTimeRange = (range: string) => {
   
   // Set the start date and data point interval based on range
   switch (range) {
-    case '10H':
+    case '1H':
       startDate = sub(now, { hours: 10 });
       interval = 5; // 5 minutes
       break;

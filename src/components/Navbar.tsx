@@ -47,7 +47,7 @@ export default function Navbar() {
           </button>
         </Link>
         <div className="hidden xl:flex space-x-4">
-          <Link href="/sharednodes" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">SAHRED NODES</Link>
+          <Link href="/sharednodes" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">SHARED NODES</Link>
           <Link href="/privatenodes" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">PRIVATE NODES</Link>
           <Link href="/dashboard" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">DASHBOARD</Link>
         </div>
