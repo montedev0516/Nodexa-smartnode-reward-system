@@ -10,10 +10,16 @@ interface PriceData {
   timestamp: string;
 }
 
+const Divider = () => (
+  <div className="w-full pt-[10px]">
+      <div className="bg-gradient-to-r from-[#00AEB900] via-[#00AEB9] to-[#00AEB900] from-[0%] via-[50%] to-[100%] h-[2px] w-full" />
+  </div>
+);
+
 export default function NeoxaPriceChart() {
 
   const [priceData, setPriceData] = useState<PriceData[]>([]);
-  const [timeRange, setTimeRange] = useState<string>("10H");
+  const [timeRange, setTimeRange] = useState<string>("1H");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPrice, setCurrentPrice] = useState<number | null>(0);
@@ -47,7 +53,9 @@ export default function NeoxaPriceChart() {
       if (data.length > 0) {
         setCurrentPrice(data[data.length - 1].price);
       }
-      
+
+      console.log('current price', currentPrice);
+    
       // No need to generate fixed labels anymore as we're using actual data timestamps
       // xAxisLabelsRef.current = generateFixedXAxisLabels();
     } catch (error) {
@@ -59,44 +67,47 @@ export default function NeoxaPriceChart() {
   };
 
   // Save current price to database (called by a cron job)
-  const saveCurrentPrice = async () => {
-    try {
-      const response = await fetch("/api/auth/neoxa/save-price");
+  // const saveCurrentPrice = async () => {
+  //   try {
+  //     const response = await fetch("/api/auth/neoxa/save-price");
       
-      if (!response.ok) {
-        console.error("Failed to save current price");
-      }
-    } catch (error) {
-      console.error("Error saving current price:", error);
-    }
-  };
+  //     if (!response.ok) {
+  //       console.error("Failed to save current price");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saving current price:", error);
+  //   }
+  // };
 
   // Fetch data when time range changes
   useEffect(() => {
     fetchPriceHistory();
   }, [timeRange]);
 
+  // useEffect(() => {
+  //   const interval = setInterval(fetchPriceHistory, 5 * 60 * 1000); // 5 minutes
+  //   // return () => clearInterval(interval);
+  // }, []);
+
   // Set up interval to save price data every 5 minutes
-  useEffect(() => {
-    // Initial save
-    saveCurrentPrice();
+  // useEffect(() => {
+  //   // Initial save
+  //   saveCurrentPrice();
     
-    // Set up interval
-    const interval = setInterval(saveCurrentPrice, 5 * 60 * 1000); // 5 minutes
+  //   // Set up interval
+  //   const interval = setInterval(saveCurrentPrice, 5 * 60 * 1000); // 5 minutes
     
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div className="w-full h-full rounded-lg  flex flex-col">
-        <div className="bg-[#121826] border border-[#2F3747] rounded-lg p-4 ">
+        <div className="bg-[#121826] border border-[#2F3747] rounded-lg px-[42px] py-[32px]">
           <div className="flex justify-between">
-            <h3 className="text-white text-xl font-semibold">NEOXA Price Chart</h3>
-            <TimeRangeSelector
-              selectedRange={timeRange}
-              onRangeChange={handleRangeChange}
-              />
+            <h3 className="text-white text-xl font-semibold">NEOXA</h3>
+            <h3 className="text-white text-xl font-semibold">${currentPrice?.toFixed(5)}USD</h3>
           </div>
+          <Divider />
           {isLoading ? (
             <div className="w-full h-[400px] flex items-center justify-center">
               <p className="text-gray-400">Loading price data...</p>
@@ -108,6 +119,10 @@ export default function NeoxaPriceChart() {
           ) : (
             <PriceChart timeRange={timeRange} priceData={priceData} />
           )}
+          <TimeRangeSelector
+              selectedRange={timeRange}
+              onRangeChange={handleRangeChange}
+              />
         </div>
     </div>
   );

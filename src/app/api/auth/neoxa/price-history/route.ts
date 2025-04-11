@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
-        const timeRange = searchParams.get('timeRange') || '10H';
+        const timeRange = searchParams.get('timeRange') || '1H';
         
         // Calculate the start time based on the time range
         const now = new Date();
@@ -19,9 +19,9 @@ export async function GET(request: Request) {
         let unit = 1;
         
         switch (timeRange) {
-            case '10H':
+            case '1H':
                 startTime.setHours(now.getHours() - 10);
-                console.log('10H view', startTime); // 10 hours for 10H view
+                console.log('1H view', startTime); // 10 hours for 1H view
                 break;
             case '1D':
                 startTime.setDate(now.getDate() - 1);
