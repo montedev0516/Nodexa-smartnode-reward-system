@@ -104,9 +104,9 @@ const mockNodes: NodeData[] = [
 ];
 
 const TableHeader = () => (
-    <div className="hidden lg:flex w-full h-[56px] flex-row justify-between items-center gap-[20px] px-[20px] lg:px-[40px] py-[15px]">
+    <div className="hidden lg:flex w-full flex-row justify-between items-center gap-[20px] pl-[41px] pr-[17px]">
         {columnHeaders.map((header) => (
-            <div key={header.key} className={`${header.width} flex flex-row justify-${header.align || 'start'} items-center`}>
+            <div key={header.key} className={`${header.width} flex flex-row justify-${header.align || 'center'} items-center`}>
                 <h1 className="font-family-sora font-semibold text-white text-[14px] md:text-[18px] text-center">{header.label}</h1>
             </div>
         ))}
@@ -192,8 +192,8 @@ const NodeRow = ({ node, onDetailClick }: { node: NodeData; onDetailClick: () =>
 
     // Desktop row view
     const DesktopView = () => (
-        <div className="hidden lg:block w-full h-[56px] p-[1px] bg-gradient-to-r from-[#EC008C] to-[#00AEB9] rounded-[76px]">
-            <div className="w-full h-full bg-[#1C1840] rounded-[76px] flex flex-row justify-between items-center gap-[20px] px-[20px] lg:px-[40px] py-[15px]">
+        <div className="hidden my-[11px] lg:block w-full h-[56px] p-[1px] bg-gradient-to-r from-[#EC008C] to-[#00AEB9] rounded-[76px]">
+            <div className="w-full h-full bg-[#1C1840] rounded-[76px] flex flex-row justify-between items-center gap-[20px] pr-[17px] pl-[41px]">
                 <div className="w-[70px] flex flex-row justify-start items-center">
                     <h1 className="font-family-sora font-regular text-white text-[14px]">{node.name}</h1>
                 </div>
@@ -273,7 +273,7 @@ export default function MyPrivateNodes() {
     };
 
     return (
-        <div className="w-full flex flex-col justify-center items-center gap-[20px] lg:gap-[40px] px-[15px] lg:px-0 pt-[60px] lg:pt-[120px] pb-[100px] lg:pb-[200px]">
+        <div className="w-full flex flex-col justify-center items-center gap-[20px] px-[15px] lg:px-0 pt-[60px] lg:pt-[120px] pb-[100px] lg:pb-[200px]">
             <TableHeader />
             {nodes.map((node) => (
                 <NodeRow 

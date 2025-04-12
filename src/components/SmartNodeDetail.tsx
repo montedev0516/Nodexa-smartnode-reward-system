@@ -15,15 +15,15 @@ interface InputFieldProps {
 }
 
 const InputField = ({ label, value, onCopy, onEdit, isEditable = false, onChange }: InputFieldProps) => (
-    <div className="w-full min-h-[24px] flex flex-col sm:flex-row sm:h-[24px] justify-between items-start sm:items-center gap-1 sm:gap-[15px] py-1 sm:py-0">
-        <label className="w-full sm:w-[150px] font-family-sora font-semibold text-white text-[12px]">{label}:</label>
-        <div className="w-full flex items-center gap-2">
+    <div className="w-full min-h-[24px] flex flex-row justify-between items-start sm:items-center gap-1 sm:gap-[15px]">
+        <label className="w-[150px] font-family-sora font-semibold text-white text-[12px]">{label}:</label>
+        <div className="flex-1 flex items-center gap-2">
             <input 
                 type="text" 
                 value={value}
                 readOnly={!isEditable}
                 onChange={(e) => onChange?.(e.target.value)}
-                className="w-full font-family-sora font-regular text-white text-[12px] bg-[#102644] 
+                className="flex-1 font-family-sora font-regular text-white text-[12px] bg-[#102644] 
                 border-[1px] border-[#00AEB9] rounded-[10px] px-[10px] py-[5px]" 
             />
             <button 
@@ -43,8 +43,8 @@ const InputField = ({ label, value, onCopy, onEdit, isEditable = false, onChange
 );
 
 const StatCard = ({ title, value, icon }: { title: string; value: string; icon?: string }) => (
-    <div className="w-full sm:w-[210px] p-[1px] bg-gradient-to-b from-[#1EC0CA] to-[#1EC0CA16] rounded-[22px]">
-        <div className="w-full h-full bg-gradient-to-b from-[#252525] to-[#0F0F0F] rounded-[22px]
+    <div className="w-full sm:w-[210px] frame-border rounded-[22px]">
+        <div className="w-full h-full frame-body rounded-[22px]
         flex flex-col justify-center items-center gap-[10px] sm:gap-[20px] px-[15px] sm:px-[20px] py-[10px] sm:py-[15px]">
             <h1 className="font-family-sora font-semibold text-white text-[12px]">{title}</h1>
             <div className="flex flex-row justify-center items-center gap-[5px] sm:gap-[10px]">
@@ -69,22 +69,42 @@ const TransactionRow = ({ transaction, blockHeight, amount, date }: {
     amount: string; 
     date: string; 
 }) => (
-    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0 pb-[15px] sm:pb-[30px]">
-        <div className="w-full sm:min-w-[475px] flex flex-col sm:flex-row items-start sm:items-center gap-1">
-            {/* <span className="text-[12px] font-family-sora font-bold text-white">Transaction:</span> */}
-            <span className="text-[12px] font-family-sora font-light text-white truncate">{transaction}</span>
+    <div className="w-full flex flex-row gap-4">
+        <div className="w-1/4 md:hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0 pb-[15px] md:pb-[30px]">
+            <div className="w-full md:min-w-[475px] flex flex-col md:flex-row items-start md:items-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Transaction:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white truncate">Transaction</span>
+            </div>
+            <div className="w-full md:w-[120px] md:min-w-[100px] flex flex-col md:flex-row items-start md:items-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Block Height:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white">Block Height</span>
+            </div>
+            <div className="w-full md:w-[70px] md:min-w-[58px] flex flex-col md:flex-row items-start md:items-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Amount:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white">Amount</span>
+            </div>
+            <div className="w-full md:min-w-[170px] flex flex-col md:flex-row items-start md:items-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Date:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white">Date</span>
+            </div>
         </div>
-        <div className="w-full sm:w-[100px] sm:min-w-[92px] flex flex-col sm:flex-row items-start sm:items-center gap-1">
-            {/* <span className="text-[12px] font-family-sora font-bold text-white">Block Height:</span> */}
-            <span className="text-[12px] font-family-sora font-light text-white">{blockHeight}</span>
-        </div>
-        <div className="w-full sm:w-[70px] sm:min-w-[58px] flex flex-col sm:flex-row items-start sm:items-center gap-1">
-            {/* <span className="text-[12px] font-family-sora font-bold text-white">Amount:</span> */}
-            <span className="text-[12px] font-family-sora font-light text-white">{amount}</span>
-        </div>
-        <div className="w-full sm:min-w-[170px] flex flex-col sm:flex-row items-start sm:items-center gap-1">
-            {/* <span className="text-[12px] font-family-sora font-bold text-white">Date:</span> */}
-            <span className="text-[12px] font-family-sora font-light text-white">{date}</span>
+        <div className="flex-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-2 md:gap-0 pb-[15px] md:pb-[30px]">
+            <div className="w-full md:min-w-[475px] flex flex-col md:flex-row items-start md:items-center justify-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Transaction:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white truncate">{transaction}</span>
+            </div>
+            <div className="w-full md:w-[120px] md:min-w-[100px] flex flex-col md:flex-row items-start md:items-center justify-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Block Height:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white">{blockHeight}</span>
+            </div>
+            <div className="w-full md:w-[80px] md:min-w-[80px] flex flex-col md:flex-row items-start md:items-center justify-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Amount:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white">{amount}</span>
+            </div>
+            <div className="w-full md:min-w-[120px] flex flex-col md:flex-row items-start md:items-center justify-center gap-1">
+                {/* <span className="text-[12px] font-family-sora font-bold text-white">Date:</span> */}
+                <span className="text-[12px] font-family-sora font-light text-white">{date}</span>
+            </div>
         </div>
     </div>
 );
@@ -121,11 +141,11 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
     };
 
     return (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center p-2 sm:p-4">
-            <div className="w-full max-w-[960px] h-[913px] border-[1px] border-[#00AEB9] bg-[#080525] rounded-[20px] 
-            flex flex-col justify-start items-center px-3 sm:px-[65px] py-3 sm:py-[20px] my-4 sm:my-0">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center p-2 sm:p-4">
+            <div className="w-full max-w-[960px] border-[1px] border-[#00AEB9] bg-[#080525] rounded-[20px] 
+            flex flex-col justify-start items-center px-3 sm:px-[65px] py-3 sm:py-[20px] my-4 sm:my-0 overflow-y-auto">
                 {/* Header */}
-                <div className="w-full flex flex-row justify-center items-center relative mb-4">
+                <div className="w-full flex flex-row justify-center items-center relative">
                     <h1 className="text-[20px] sm:text-[34px] font-family-sora font-bold text-white text-center">SMARTNODE DETAILS</h1>
                     <button 
                         onClick={() => setIsOpen(false)}
@@ -142,14 +162,14 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
                 </div>
 
                 {/* Divider */}
-                <div className="w-full py-2 sm:py-4">
+                <div className="w-full py-2 sm:py-4 mb-4 ">
                     <div className="bg-gradient-to-r from-[#00AEB900] via-[#00AEB9] to-[#00AEB900] from-[0%] via-[50%] to-[100%] h-[2px] w-full" />
                 </div>
 
                 {/* Main Content */}
                 <div className="w-full flex flex-col lg:flex-row justify-between items-start gap-4 sm:gap-8">
                     {/* Input Fields */}
-                    <div className="w-full lg:w-2/3 flex flex-col justify-center items-start gap-2 sm:gap-3">
+                    <div className="w-full lg:w-2/3 flex flex-col justify-center items-start gap-1">
                         <InputField
                             label="Name"
                             value={nodeData.name}
@@ -220,7 +240,7 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="w-full h-full lg:w-1/3 flex flex-row lg:flex-col justify-center items-center gap-3 sm:gap-[30px]">
+                    <div className="w-full h-full lg:h-[370px] lg:w-1/3 flex flex-row lg:flex-col justify-center items-center gap-3 sm:gap-[30px] ">
                         <StatCard
                             title="Smartnode Worth"
                             value="$1080"
@@ -239,9 +259,7 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
                     text-white text-[13px] cursor-pointer transition-colors duration-200 hover:bg-[#1AADB6]">
                         Configure
                     </button>
-                    <button className="w-full sm:w-[130px] h-[34px] bg-[#A31704] rounded-[36px] flex flex-row justify-start items-center 
-                    font-family-sora font-semibold text-white text-[13px] pl-[20px] cursor-pointer transition-colors duration-200 
-                    hover:bg-[#8A1403]">
+                    <button className="w-full sm:w-[130px] h-[34px] bg-[#A31704] rounded-[36px] flex flex-row justify-center items-center font-family-sora font-semibold text-white text-[13px] pl-[20px] cursor-pointer transition-colors duration-200 hover:bg-[#8A1403]">
                         Delete Node
                         <Image 
                             src="/myaccount/trash-icon.svg" 
@@ -254,21 +272,21 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
                 </div>
 
                 {/* Transaction History */}
-                <div className="w-full h-[200px] lg:h-[260px] p-[1px] bg-gradient-to-r from-[#EC008C] to-[#00AEB9] rounded-[26px]">
-                    <div className="w-full h-full bg-[#1C1840] flex flex-col justify-start items-center gap-4 sm:gap-[10px] 
-                    rounded-[26px] px-3 sm:px-[25px] py-3 sm:py-[20px] overflow-x-auto">
+                <div className="w-full h-[257px] lg:h-[257px] p-[1px] bg-gradient-to-r from-[#EC008C] to-[#00AEB9] rounded-[26px] mt-[5px] mb-[35px ]">
+                    <div className="w-full h-full bg-[#1C1840] flex flex-col justify-start items-center gap-4 md:gap-[10px] 
+                    rounded-[26px] px-3 md:px-[25px] py-3 md:py-[20px] overflow-x-auto">
                         {/* Transaction Headers */}
-                        <div className="w-full flex flex-col sm:flex-row justify-between items-center sm:items-center gap-2 sm:gap-0">
-                            <div className="w-full sm:min-w-[475px] flex flex-row justify-center items-center">
+                        <div className="w-full hidden md:flex flex-col md:flex-row justify-between items-center md:items-center gap-2 md:gap-0">
+                            <div className="w-full md:min-w-[475px] flex flex-row justify-center items-center">
                                 <span className="text-[14px] font-family-sora font-bold text-white">Transaction</span>
                             </div>
-                            <div className="w-full sm:w-[100px] sm:min-w-[92px] flex flex-row justify-center items-center">
+                            <div className="w-full md:w-[120px] md:min-w-[100px] flex flex-row justify-center items-center">
                                 <span className="text-[14px] font-family-sora font-bold text-white">Block Height</span>
                             </div>
-                            <div className="w-full sm:w-[70px] sm:min-w-[58px] flex flex-row justify-center items-center">
+                            <div className="w-full md:w-[80px] md:min-w-[80px] flex flex-row justify-center items-center">
                                 <span className="text-[14px] font-family-sora font-bold text-white">Amount</span>
                             </div>
-                            <div className="w-full sm:min-w-[170px] flex flex-row justify-center items-center">
+                            <div className="w-full md:min-w-[120px] flex flex-row justify-center items-center">
                                 <span className="text-[14px] font-family-sora font-bold text-white">Date</span>
                             </div>
                         </div>
