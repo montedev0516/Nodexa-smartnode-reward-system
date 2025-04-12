@@ -49,7 +49,7 @@ const StepIndicator = () => (
 );
 
 const StepCard = ({ step }: { step: SetupStep }) => (
-    <div className="xl:w-[297px] xl:h-[195px] 2xl:w-[350px] 2xl:h-[195px] w-full bg-[#1C1840] flex flex-col justify-start items-center text-left border-1 border-[#00AEB9] rounded-[10px] px-[22px] py-[20px]">
+    <div className="w-full bg-[#1C1840] flex flex-col justify-start items-center text-left border-1 border-[#00AEB9] rounded-[10px] px-[22px] py-[20px]">
         <div className="w-full flex flex-row justify-start items-center pb-[15px]">
             <div className="w-[31px] h-[31px] bg-[#EC008C] rounded-full text-white text-[14px] font-family-sora font-bold flex justify-center items-center text-center">
                 #{step.id}
@@ -78,19 +78,13 @@ export default function SmartNodesSetUp() {
             <div className="w-full flex flex-col justify-center items-center text-center">
                 <div className="w-full text-[30px] font-family-sora font-bold py-[20px]">SMARTNODE SETUP</div>
                 <div className="w-full h-[2px] bg-gradient-to-r from-[#221E45] via-[#00AEB9] to-[#221E45]" />
-                
+
                 <div className="w-full flex flex-col justify-center items-center gap-[30px] py-[40px]">
                     <StepIndicator />
                 </div>
 
-                <div className="w-full flex flex-col xl:flex-row justify-between items-center gap-[20px]">
-                    {setupSteps.slice(0, 4).map((step) => (
-                        <StepCard key={step.id} step={step} />
-                    ))}
-                </div>
-
-                <div className="w-full flex flex-col xl:flex-row justify-between items-center gap-[20px] py-[20px]">
-                    {setupSteps.slice(4).map((step) => (
+                <div className="max-w-[1250px] w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[20px]">
+                    {setupSteps.map((step) => (
                         <StepCard key={step.id} step={step} />
                     ))}
                 </div>

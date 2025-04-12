@@ -76,7 +76,7 @@ const hostingPlansData: HostingPlan[] = [
             percentage: 80
         },
         depositCollateral: {
-            range: "100000-2000000"
+            range: "100000000-2000000000"
         },
         participants: {
             current: 3,
@@ -119,14 +119,14 @@ const HostingPlanCard = ({ plan }: { plan: HostingPlan }) => {
                 <div className="hidden w-full sm:flex flex-col justify-between items-center space-y-[11px] text-center">
                     <div className="w-full flex flex-row justify-between items-center text-start">
                         <div className="w-[188px] text-[18px] text-white font-family-sora font-regular">Neoxa Been Deposited</div>
-                        <div className="w-[201px] border-1 border-[#EC008C] flex justify-center items-center text-center rounded-[10px] px-[37px] py-[10px]">
+                        <div className="w-[201px] h-[40px] border-1 border-[#EC008C] flex justify-center items-center text-center rounded-[10px] bg-[#0B1331] px-[37px] py-[10px]">
                             {plan.neoxaDeposited.current.toLocaleString()}/{plan.neoxaDeposited.total.toLocaleString()}
                         </div>
                         <div className="w-[95px] text-[18px] text-white font-family-sora font-regular text-center">({plan.neoxaDeposited.percentage}%)</div>
                     </div>
                     <div className="w-full flex flex-row justify-between items-center gap-[23px] text-start">
                         <div className="w-[188px] text-[18px] text-white font-family-sora font-regular">Deposit Collateral</div>
-                        <div className="w-[201px] border-1 border-[#EC008C] flex justify-center items-center text-center rounded-[10px] px-[37px] py-[10px]">
+                        <div className="w-[201px] h-[40px] border-1 border-[#EC008C] flex justify-center items-center text-center rounded-[10px] bg-[#0B1331]">
                             {plan.depositCollateral.range}
                         </div>
                         <div className="w-[95px] flex justify-center items-center">
@@ -199,14 +199,9 @@ const HostingPlanCard = ({ plan }: { plan: HostingPlan }) => {
 
 export default function SharedHostingPlan() {
     return (
-        <main className="pt-14 pb-6">
-            <div className="flex flex-col xl:flex-row justify-between items-center gap-[28px] 2xl:gap-[150px] text-center py-[20px]">
-                {hostingPlansData.slice(0, 2).map((plan, index) => (
-                    <HostingPlanCard key={index} plan={plan} />
-                ))}
-            </div>
-            <div className="flex flex-col xl:flex-row justify-between items-center gap-[28px] 2xl:gap-[150px] text-center py-[20px]">
-                {hostingPlansData.slice(2, 4).map((plan, index) => (
+        <main className="pt-14 pb-6 flex justify-center">
+            <div className="grid xl:grid-cols-2 grid-cols-1 gap-[28px] xl:gap-[28px] text-center py-[20px]">
+                {hostingPlansData.map((plan, index) => (
                     <HostingPlanCard key={index + 2} plan={plan} />
                 ))}
             </div>
