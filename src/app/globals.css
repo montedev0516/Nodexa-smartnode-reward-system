@@ -117,6 +117,18 @@ body {
   );
 }
 
+.frame-border {
+  border: 1px solid transparent;
+  background-image: linear-gradient(#080525, #080525),
+    linear-gradient(rgba(30, 192, 202, 1), rgba(30, 192, 202, 1), rgba(30, 192, 202, .16));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+.frame-body {
+  border:none;
+  background-image: linear-gradient(rgba(43, 255, 255, .12) 0%, rgba(43, 255, 255, .12) 4%, rgba(43, 255, 255, .04) 50%, rgba(43, 255, 255, .07) 100%)
+}
+
 @keyframes statusActive {
   0% {
     background: rgba(87, 240, 96, 1);

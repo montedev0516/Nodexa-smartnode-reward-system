@@ -1,7 +1,7 @@
 export const StatusComponent = ({status}: {status: string}) => {
     return (
       <div>
-        {status == "Online" ? (
+        {status == "Online" || "Active" ? (
           <>
             <div className="status-active-grad">
               <div className="status-active"></div>

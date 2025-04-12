@@ -1,6 +1,7 @@
 "use client"
 import Image from "next/image"
 import { useState, useEffect } from "react"
+import { StatusComponent } from "./StatusComponent";
 
 interface SharedNodeData {
     id: number;
@@ -11,7 +12,7 @@ interface SharedNodeData {
     nodeIP: string;
     rewards: number;
     nextPayIn: string;
-    participants: number;
+    participants: number;                           
     myCollateral: number;
     myRewards: number;
     hostingPlan: string;
@@ -79,39 +80,45 @@ const NodeInfoItem = ({
     showCoin?: boolean;
     width?: string;
     isMobile?: boolean;
-}) => (
-    <div className={`
-        ${isMobile ? 'w-full px-4' : `w-[${width}]`}
-        h-full flex ${isMobile ? 'flex-row justify-between' : 'flex-col justify-center'} 
-        items-center
-    `}>
+}) => {
+    console.log("value: ", value);
+
+    return (
         <div className={`
-            flex justify-center items-center text-white 
-            ${isMobile ? 'text-[14px]' : 'text-[18px]'} 
-            font-family-sora font-semibold
+            ${isMobile ? 'w-full px-4' : `w-[${width}]`}
+            h-full flex ${isMobile ? 'flex-row justify-between' : 'flex-col justify-center'} 
+            items-center
         `}>
-            {title}
-        </div>
-        <div className="flex flex-row justify-center items-center gap-[8px]">
             <div className={`
-                text-grey-500 
-                ${isMobile ? 'text-[14px]' : 'text-[16px]'} 
-                font-family-sora font-normal
+                flex justify-center items-center text-white 
+                ${isMobile ? 'text-[14px]' : 'text-[18px]'} 
+                font-family-sora font-semibold
             `}>
-                {typeof value === 'number' ? value.toLocaleString() : value}
+                {title}
             </div>
-            {showCoin && (
-                <Image 
-                    src="/neoxa_button/neoxa-coin.svg" 
-                    alt="neoxa-coin" 
-                    width={isMobile ? 16 : 22} 
-                    height={isMobile ? 16 : 22} 
-                    className={`${isMobile ? 'w-4 h-4' : 'w-[22px] h-[22px]'}`} 
-                />
-            )}
+            <div className="flex flex-row justify-center items-center gap-[8px]">
+                <div className={`
+                    text-grey-500 flex items-center gap-2
+                    ${isMobile ? 'text-[14px]' : 'text-[16px]'} 
+                    font-family-sora font-normal
+                `}>
+                    { title === 'Status' ? 
+                        <StatusComponent status={value === "Active" ? "Online" : ""} />
+                        : <></> }
+                    {typeof value === 'number' ? value.toLocaleString() : value}
+                </div>
+                {showCoin && (
+                    <Image 
+                        src="/neoxa_button/neoxa-coin.svg" 
+                        alt="neoxa-coin" 
+                        width={isMobile ? 16 : 22} 
+                        height={isMobile ? 16 : 22} 
+                        className={`${isMobile ? 'w-4 h-4' : 'w-[22px] h-[22px]'}`} 
+                    />
+                )}
+            </div>
         </div>
-    </div>
-);
+);};
 
 const MobileNodeInfo = ({ node }: { node: SharedNodeData }) => (
     <div className="w-full space-y-3 py-4">
@@ -243,7 +250,7 @@ export default function SharedNodes() {
 
     return (
         <div className="w-full flex flex-col justify-center items-center gap-[20px] 
-        md:gap-[40px] pt-[60px] md:pt-[120px] pb-[100px] md:pb-[200px] px-4 sm:px-6 lg:px-8">
+        md:gap-[40px] pt-[60px] md:pt-[120px] pb-[100px] md:pb-[200px] px-4 sm:px-6 lg:px-8 ">
             {error && (
                 <div className="w-full max-w-3xl bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-500 text-center text-sm md:text-base">
                     {error}
