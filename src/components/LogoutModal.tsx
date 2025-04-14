@@ -3,10 +3,11 @@ import React from 'react';
 interface LogoutModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onDisable: () => void;
   onConfirm: () => void;
 }
 
-const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm }) => {
+const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onDisable, onConfirm }) => {
   if (!isOpen) return null;
 
   return (
@@ -17,7 +18,7 @@ const LogoutModal: React.FC<LogoutModalProps> = ({ isOpen, onClose, onConfirm })
         <p className="text-center text-white text-[13px] font-family-sora font-regular pt-[15px] pb-[21px]">Are you sure you want to Log Out?</p>
         <div className="flex justify-center space-x-4">
           <button 
-            onClick={onConfirm}
+            onClick={()=>{onConfirm(); onDisable()}}
             className="w-[44px] h-[16px] bg-[#00AEB9] flex items-center justify-center
             text-white text-[13px] font-family-sora font-regular rounded-full hover:text-white transition-colors duration-300 cursor-pointer"
           >
