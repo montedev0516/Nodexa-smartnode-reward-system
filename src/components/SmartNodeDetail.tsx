@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import SmartNodeConfig from './SmartNodeConfig';
 
 interface SmartNodeDetailProps {
     setIsOpen: (isOpen: boolean) => void;
@@ -45,9 +46,9 @@ const InputField = ({ label, value, onCopy, onEdit, isEditable = false, onChange
 const StatCard = ({ title, value, icon }: { title: string; value: string; icon?: string }) => (
     <div className="w-full sm:w-[210px] frame-border rounded-[22px]">
         <div className="w-full h-full frame-body rounded-[22px]
-        flex flex-col justify-center items-center gap-[10px] sm:gap-[20px] px-[15px] sm:px-[20px] py-[10px] sm:py-[15px]">
+        flex flex-col justify-center items-center gap-[10px] px-[15px] sm:px-[20px] py-[10px] sm:py-[15px]">
             <h1 className="font-family-sora font-semibold text-white text-[12px]">{title}</h1>
-            <div className="flex flex-row justify-center items-center gap-[5px] sm:gap-[10px]">
+            <div className="flex flex-row justify-center items-center gap-[2px]">
                 <h1 className="font-family-sora font-semibold text-white text-[12px]">{value}</h1>
                 {icon && (
                     <Image 
@@ -109,6 +110,72 @@ const TransactionRow = ({ transaction, blockHeight, amount, date }: {
     </div>
 );
 
+interface WarningModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+}
+
+const WarningModal = ({ isOpen, onClose, onConfirm }: WarningModalProps) => {
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isOpen, onClose]);
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-opacity-0">
+            <div 
+                ref={modalRef}
+                className="w-full max-w-[600px] mx-4 rounded-[27px] border-1 border-[#00AEB9] bg-[#272E50] p-8"
+            >
+                <h2 className="text-white text-4xl font-family-sora font-bold text-center mb-4">Warning</h2>
+                
+                <div className="w-full py-[10px]">
+                    <div className="bg-gradient-to-r from-[#00AEB900] via-[#00AEB9] to-[#00AEB900] from-[0%] via-[50%] to-[100%] h-[2px] w-full" />
+                </div>
+                
+                <div className="text-white text-xl font-family-sora text-center mb-4">
+                    <p>Your Smartnode will be permanently</p>
+                    <p>deleted and removed from the system.</p>
+                    <p>Any remaining host duration is not</p>
+                    <p>refundable.</p>
+                    <p>Do you wish to proceed ?</p>
+                </div>
+
+                <div className="flex justify-center items-center gap-4">
+                    <button
+                        onClick={onConfirm}
+                        className="w-[90px] h-[30px] bg-[#00AEB9] rounded-[33px] text-white text-[13px] font-family-sora font-bold hover:opacity-90 transition-opacity"
+                    >
+                        Yes
+                    </button>
+                    <button
+                        onClick={onClose}
+                        className="w-[90px] h-[30px] bg-[#00AEB9] rounded-[33px] text-white text-[13px] font-family-sora font-bold hover:opacity-90 transition-opacity"
+                    >
+                        No
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
     const [nodeData, setNodeData] = useState({
         name: "SmartNode 1",
@@ -123,6 +190,8 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
         blsPrivKey: "0xijkl...mnop",
         blsPubKey: "0xqrst...uvwx"
     });
+    const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+    const [isConfigOpen, setIsConfigOpen] = useState(false);
 
     const handleCopy = (field: keyof typeof nodeData) => {
         navigator.clipboard.writeText(nodeData[field]);
@@ -140,8 +209,47 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
         }));
     };
 
+    const handleDeleteNode = () => {
+        setIsWarningModalOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        try {
+            // Make API call to delete node
+            // const response = await fetch('/api/smartnode/delete', {
+            //     method: 'DELETE',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({ nodeId: nodeData.id })
+            // });
+
+            // if (response.ok) {
+            //     // Handle successful deletion
+            //     setIsOpen(false);
+            // }
+            setIsWarningModalOpen(false);
+            setIsOpen(false); // Close the detail modal after successful deletion
+        } catch (error) {
+            console.error('Error deleting node:', error);
+            setIsWarningModalOpen(false);
+        }
+    };
+
+    const handleConfigureClick = () => {
+        setIsConfigOpen(true);
+    };
+
+    const handleConfigClose = () => {
+        setIsConfigOpen(false);
+    };
+
+    if (isConfigOpen) {
+        return <SmartNodeConfig onClose={handleConfigClose} onBack={() => setIsConfigOpen(false)} />;
+    }
+
     return (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center p-2 sm:p-4">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center p-2 sm:p-4">
             <div className="w-full max-w-[960px] border-[1px] border-[#00AEB9] bg-[#080525] rounded-[20px] 
             flex flex-col justify-start items-center px-3 sm:px-[65px] py-3 sm:py-[20px] my-4 sm:my-0 overflow-y-auto">
                 {/* Header */}
@@ -255,11 +363,17 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
 
                 {/* Action Buttons */}
                 <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-3 sm:gap-[15px] py-4">
-                    <button className="w-full sm:w-[109px] h-[34px] bg-[#1EC0CA] rounded-[36px] font-family-sora font-semibold 
-                    text-white text-[13px] cursor-pointer transition-colors duration-200 hover:bg-[#1AADB6]">
+                    <button 
+                        onClick={handleConfigureClick}
+                        className="w-full sm:w-[109px] h-[34px] bg-[#1EC0CA] rounded-[36px] font-family-sora font-semibold 
+                        text-white text-[13px] cursor-pointer transition-colors duration-200 hover:bg-[#1AADB6]"
+                    >
                         Configure
                     </button>
-                    <button className="w-full sm:w-[130px] h-[34px] bg-[#A31704] rounded-[36px] flex flex-row justify-center items-center font-family-sora font-semibold text-white text-[13px] pl-[20px] cursor-pointer transition-colors duration-200 hover:bg-[#8A1403]">
+                    <button 
+                        onClick={handleDeleteNode}
+                        className="w-full sm:w-[130px] h-[34px] bg-[#A31704] rounded-[36px] flex flex-row justify-center items-center font-family-sora font-semibold text-white text-[13px] cursor-pointer transition-colors duration-200 hover:bg-[#8A1403]"
+                    >
                         Delete Node
                         <Image 
                             src="/myaccount/trash-icon.svg" 
@@ -313,6 +427,12 @@ export default function SmartNodeDetail({ setIsOpen }: SmartNodeDetailProps) {
                     </div>
                 </div>
             </div>
+
+            <WarningModal 
+                isOpen={isWarningModalOpen}
+                onClose={() => setIsWarningModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+            />
         </div>
     );
 }
