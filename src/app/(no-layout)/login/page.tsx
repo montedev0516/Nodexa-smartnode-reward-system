@@ -2,15 +2,24 @@
 
 import ReCaptcha from '@/utils/reCaptcha'
 import Link from 'next/link'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import ReCAPTCHA from 'react-google-recaptcha'
+import toast from 'react-hot-toast';
+import PasswordStrengthMeter from '@/utils/passwordStrengthMeter';
+import Show2FAModal from '@/components/Show2FAModal';
 
 // Validation schema
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(32, { message: 'Password must be less than 32 characters' })
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
 });
 
 export default function Login() {
@@ -25,7 +34,9 @@ export default function Login() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showResetPrompt, setShowResetPrompt] = useState(false);
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFactorSecret, setTwoFactorSecret] = useState<string | null>(null);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -45,6 +56,7 @@ export default function Login() {
       setErrors({});
       return true;
     } catch (error) {
+      toast.error('Please check your inputs!');
       if (error instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {};
         error.errors.forEach(err => {
@@ -60,7 +72,7 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -71,7 +83,7 @@ export default function Login() {
     }
 
     setIsSubmitting(true);
-    setShowResetPrompt(false);
+
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -86,26 +98,44 @@ export default function Login() {
       });
 
       const data = await response.json();
+      console.log('@@Login response:', data);
+      console.log('@@2FA enabled:', data.user.twoFactorEnabled);
+      console.log('@@2FA secret:', data.user.twoFactorSecret);
 
       if (!response.ok) {
         if (data.suggestReset) {
-          setShowResetPrompt(true);
+          toast.error('Password is incorrect!');
         }
         // Reset reCAPTCHA on any error
         recaptchaRef.current?.reset();
         setRecaptchaToken(null);
-        throw new Error(data.error || 'Login failed');
+        toast.error(data.error || 'Login failed');
+        return;
       }
 
+      // Check if the 2FA is enabled
+      if (data.user.twoFactorEnabled && data.user.twoFactorSecret !== null) {
+        console.log('@@2FA enabled:', data);
+        toast('2FA is enabled. Please enter the verification code.');
+        setTwoFactorSecret(data.user.twoFactorSecret);
+        setShow2FA(true);
+        return;
+      }
+      
       // Handle successful login
       console.log('Login successful:', data);
+      toast.success('✔ Login successful');
+
+      // Redirect to the requested page or dashboard
       router.push(redirectTo); // Redirect to the requested page or dashboard
     } catch (error) {
       console.error('Login error:', error);
+      toast.error('❌ Login failed');
       setErrors(prev => ({
         ...prev,
         submit: error instanceof Error ? error.message : 'An error occurred during login'
-      }));
+      })
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -132,9 +162,8 @@ export default function Login() {
                 id="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                  errors.email ? 'border-red-500' : ''
-                }`}
+                className={`w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.email ? 'border-red-500' : ''
+                  }`}
                 placeholder="Enter your email"
                 required
               />
@@ -151,15 +180,15 @@ export default function Login() {
                 id="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                  errors.password ? 'border-red-500' : ''
-                }`}
+                className={`w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${errors.password ? 'border-red-500' : ''
+                  }`}
                 placeholder="********"
                 required
               />
-              {errors.password && (
+              <PasswordStrengthMeter password={formData.password} />
+              {/* {errors.password && (
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-              )}
+              )} */}
             </div>
             <div className="flex flex-row justify-between items-center">
               <p className="font-family-poppins text-[18px]">Forgot your password?</p>
@@ -168,7 +197,7 @@ export default function Login() {
               </Link>
             </div>
             <div className="flex justify-center">
-              <ReCaptcha 
+              <ReCaptcha
                 ref={recaptchaRef}
                 onVerify={(token) => setRecaptchaToken(token)}
                 onExpire={() => setRecaptchaToken(null)}
@@ -178,21 +207,15 @@ export default function Login() {
             {errors.recaptcha && (
               <p className="text-red-500 text-sm text-center">{errors.recaptcha}</p>
             )}
-            {errors.submit && (
+            {/* {errors.submit && (
               <p className="text-red-500 text-sm text-center">{errors.submit}</p>
-            )}
-            {showResetPrompt && (
-              <div className="bg-blue-900/50 p-4 rounded-lg text-center">
-                <p className="mb-2">Login Failed!</p>
-              </div>
-            )}
+            )} */}
             <div className="flex justify-center items-center pt-[20px]">
               <button
                 type="submit"
                 disabled={isSubmitting || !recaptchaToken}
-                className={`w-[200px] h-[50px] bg-gradient-to-b from-[#F091C9] to-[#EC008C] font-family-sora text-[25px] text-white py-3 rounded-[45px] transition-colors text-center flex justify-center items-center cursor-pointer ${
-                  (isSubmitting || !recaptchaToken) ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className={`w-[200px] h-[50px] bg-gradient-to-b from-[#F091C9] to-[#EC008C] font-family-sora text-[25px] text-white py-3 rounded-[45px] transition-colors text-center flex justify-center items-center cursor-pointer ${(isSubmitting || !recaptchaToken) ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
               >
                 {isSubmitting ? 'Logging in...' : 'Login'}
               </button>
@@ -204,6 +227,19 @@ export default function Login() {
           </form>
         </div>
       </div>
+      {/* 2FA Modal */}
+      {show2FA && twoFactorSecret !== null && (
+        <Show2FAModal
+          Email={formData.email}
+          TwoFactorSecret={twoFactorSecret}
+          RedirectTo={redirectTo}
+          isOpen={show2FA}
+          onClose={() => {
+            setShow2FA(false);
+            setTwoFactorSecret(null);
+          }}
+        />
+      )}
     </main>
   )
 } 

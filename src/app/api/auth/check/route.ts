@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 export async function GET() {
   try {
@@ -20,9 +20,10 @@ export async function GET() {
       try {
         // Verify the JWT token
         const secret = process.env.JWT_SECRET || 'your-secret-key';
-        const decoded = jwt.verify(token, secret) as { userId: string; email: string };
+        const secretKey = new TextEncoder().encode(secret);
+        const { payload } = await jwtVerify(token, secretKey);
         hasCustomAuth = true;
-        customAuthUserId = decoded.userId;
+        customAuthUserId = payload.userId as string;
       } catch (error) {
         console.error('JWT verification error:', error);
         hasCustomAuth = false;

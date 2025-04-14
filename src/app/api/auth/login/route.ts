@@ -4,7 +4,7 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { verifyRecaptcha } from '@/utils/recaptchaUtils';
 import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 
 // Validation schema
 const loginSchema = z.object({
@@ -38,6 +38,8 @@ export async function POST(request: Request) {
         email: true,
         password: true,
         emailVerified: true,
+        twoFactorEnabled: true,
+        twoFactorSecret: true,
       },
     });
 
@@ -84,16 +86,18 @@ export async function POST(request: Request) {
     // Generate JWT token
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      throw new Error('password is incorrect');
+      throw new Error('JWT_SECRET is not set');
     }
-    const token = jwt.sign(
-      { 
-        userId: user.id,
-        email: user.email
-      },
-      secret,
-      { expiresIn: '1h' }
-    );
+    
+    const secretKey = new TextEncoder().encode(secret);
+    const token = await new SignJWT({ 
+      userId: user.id,
+      email: user.email
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('1h')
+      .sign(secretKey);
 
     // Set the authentication cookie
     const cookieStore = await cookies();
@@ -110,7 +114,9 @@ export async function POST(request: Request) {
       message: 'Login successful',
       user: {
         id: user.id,
-        email: user.email
+        email: user.email,
+        twoFactorEnabled: user.twoFactorEnabled,
+        twoFactorSecret: user.twoFactorSecret
       }
     });
   } catch (error) {

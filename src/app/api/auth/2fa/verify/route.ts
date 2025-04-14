@@ -4,7 +4,7 @@ import * as OTPAuth from "otpauth";
 
 export async function POST(req: Request) {
     try {
-        const { email,secret, token } = await req.json();
+        const { email, secret, token } = await req.json();
 
         console.log("$secret", secret);
         console.log("$code", token);

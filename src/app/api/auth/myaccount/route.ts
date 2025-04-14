@@ -5,7 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { z } from "zod";
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
 export async function GET(request: NextRequest) {
     try {
@@ -41,12 +41,13 @@ export async function GET(request: NextRequest) {
                 if (!secret) {
                     throw new Error("JWT_SECRET is not defined");
                 }
-                const decoded = jwt.verify(authToken, secret) as { userId: string; email: string };
+                const secretKey = new TextEncoder().encode(secret);
+                const { payload } = await jwtVerify(authToken, secretKey);
                 
-                console.log("Using custom auth token for user:", decoded.userId);
+                console.log("Using custom auth token for user:", payload.userId);
                 
                 const user = await prisma.user.findUnique({
-                    where: { id: decoded.userId },
+                    where: { id: payload.userId as string },
                     select: {
                         email: true,
                     }
@@ -95,8 +96,9 @@ export async function PUT(request: NextRequest) {
                 if (!secret) {
                     throw new Error("not secret key!")
                 }
-                const decoded = jwt.verify(authToken, secret) as { userId: string; email: string };
-                userId = decoded.userId;
+                const secretKey = new TextEncoder().encode(secret);
+                const { payload } = await jwtVerify(authToken, secretKey);
+                userId = payload.userId as string;
             } catch (error) {
                 console.error("JWT verification error:", error);
                 return NextResponse.json({ error: "Invalid authentication token" }, { status: 401 });

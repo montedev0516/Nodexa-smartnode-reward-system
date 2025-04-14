@@ -6,11 +6,22 @@ import ReCaptcha from '@/utils/reCaptcha';
 import VerificationModal from '@/components/VerificationModal';
 import { z } from 'zod'
 import ReCAPTCHA from 'react-google-recaptcha';
+import PasswordStrengthMeter from '@/utils/passwordStrengthMeter';
+import toast from 'react-hot-toast';
 
 const signupSchema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(32, { message: 'Password must be less than 32 characters' })
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character'),
   confirmPassword: z.string().min(1, 'Confirm password is required'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 export default function SignUp() {
@@ -57,6 +68,7 @@ export default function SignUp() {
   const validateForm = () => {
     if (!recaptchaToken) {
       setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
+      toast.error('Please complete the reCAPTCHA verification!');
       return false;
     }
     try {
@@ -64,6 +76,7 @@ export default function SignUp() {
       setErrors({});
       return true;
     } catch (error) {
+      toast.error('Please check your inputs!');
       if (error instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {};
         error.errors.forEach(err => {
@@ -107,13 +120,16 @@ export default function SignUp() {
         // Reset reCAPTCHA on error
         recaptchaRef.current?.reset();
         setRecaptchaToken(null);
-        throw new Error(data.error || 'Failed to sign up');
+        toast.error(data.error || 'Failed to sign up');
+        return;
       }
+      toast.success('✔ Signup successful');
 
       // Show verification modal instead of success message
       setShowVerificationModal(true);
     } catch (error) {
       console.error('Signup error:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to sign up. Please try again.');
       setErrors(prev => ({
         ...prev,
         submit: error instanceof Error ? error.message : 'Failed to sign up. Please try again.'
@@ -129,7 +145,7 @@ export default function SignUp() {
     // Redirect to login page after 3 seconds
     setTimeout(() => {
       router.push('/login');
-    }, 4000);
+    }, 3000);
   };
 
   if (isSuccess) {
@@ -184,9 +200,9 @@ export default function SignUp() {
                 placeholder="Enter your email"
                 required
               />
-              {errors.email && (
+              {/* {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-              )}
+              )} */}
             </div>
             <div>
               <label htmlFor="password" className="block text-[18px] font-bold py-[10px]">
@@ -204,9 +220,10 @@ export default function SignUp() {
                 placeholder="********"
                 required
               />
-              {errors.password && (
+              <PasswordStrengthMeter password={formData.password} />
+              {/* {errors.password && (
                 <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-              )}
+              )} */}
             </div>
             <div>
               <label htmlFor="confirmPassword" className="block text-[18px] font-bold py-[10px]">
@@ -224,9 +241,9 @@ export default function SignUp() {
                 placeholder="********"
                 required
               />
-              {errors.confirmPassword && (
+              {/* {errors.confirmPassword && (
                 <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
-              )}
+              )} */}
             </div>
             
             <div className="flex justify-center items-center">
@@ -252,9 +269,9 @@ export default function SignUp() {
                 {isSubmitting ? 'Signing up...' : 'Sign Up'}
               </button>
             </div>
-            {errors.submit && (
+            {/* {errors.submit && (
               <p className="text-sm text-red-500 text-center">{errors.submit}</p>
-            )}
+            )} */}
           </form>
         </div>
       </div>

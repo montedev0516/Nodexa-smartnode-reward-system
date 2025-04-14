@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { jwtVerify } from 'jose'
 
 // List of public paths that don't require authentication
 const publicPaths = [
@@ -40,7 +40,7 @@ function isValidJwtFormat(token: string): boolean {
 }
 
 // Helper function to validate JWT token
-function validateJwtToken(token: string): boolean {
+async function validateJwtToken(token: string): Promise<boolean> {
   try {
     const secret = process.env.JWT_SECRET;
     if (!secret) {
@@ -48,11 +48,14 @@ function validateJwtToken(token: string): boolean {
       return false;
     }
     
+    // Create a secret key from the JWT_SECRET
+    const secretKey = new TextEncoder().encode(secret);
+    
     // Verify the token and get decoded payload
-    const decoded = jwt.verify(token, secret) as { iat: number };
+    const { payload } = await jwtVerify(token, secretKey);
     
     // Check if token is older than 1 hour (3600 seconds)
-    const tokenAge = Math.floor(Date.now() / 1000) - decoded.iat;
+    const tokenAge = Math.floor(Date.now() / 1000) - (payload.iat as number);
     if (tokenAge > 3600) {
       console.log('Token expired (older than 1 hour)');
       return false;
@@ -65,7 +68,7 @@ function validateJwtToken(token: string): boolean {
   }
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Check if the path is public
@@ -81,7 +84,7 @@ export function middleware(request: NextRequest) {
     // If user is already logged in and tries to access login/signup pages, redirect to dashboard
     if (token && (pathname === '/login' || pathname === '/signup')) {
       // Validate token before redirecting
-      if (isValidJwtFormat(token) && validateJwtToken(token)) {
+      if (isValidJwtFormat(token) && await validateJwtToken(token)) {
         return NextResponse.redirect(new URL('/dashboard', request.url))
       }
     }
@@ -96,7 +99,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Validate token format and signature
-  if (!isValidJwtFormat(token) || !validateJwtToken(token)) {
+  if (!isValidJwtFormat(token) || !(await validateJwtToken(token))) {
     // Clear invalid token
     const response = NextResponse.redirect(new URL('/login', request.url))
     response.cookies.delete('auth-token')
