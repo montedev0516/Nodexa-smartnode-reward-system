@@ -21,7 +21,7 @@ const publicPaths = [
   '/api/auth/logout',
   
   // Static assets
-  '/favicon.ico',
+  '/favicon.svg',
   '/images',
   '/fonts',
   '/styles',
@@ -69,10 +69,10 @@ export const config = {
      * 2. /_next/* (Next.js internals)
      * 3. /static/* (static files)
      * 4. /*.png, /*.jpg, /*.jpeg, /*.gif, /*.svg (static images)
-     * 5. /favicon.ico (favicon)
+     * 5. /favicon.svg (favicon)
      * 6. /images/*, /fonts/*, /styles/* (public assets)
      * 7. /404, /500 (error pages)
      */
-    '/((?!api/auth|_next|static|.*\\..*|favicon.ico|images|fonts|styles|404|500).*)',
+    '/((?!api/auth|_next|static|.*\\..*|favicon.svg|images|fonts|styles|404|500).*)',
   ],
 } 

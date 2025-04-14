@@ -6,8 +6,11 @@ import Footer from "@/components/Footer";
 import ProtectedLayout from '@/components/ProtectedLayout';
 
 export const metadata: Metadata = {
-  title: "Nodexa Hosting",
+  title: "Nodexa Rewards System",
   description: "nodexa smartnodes rewards system",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function MainLayout({
