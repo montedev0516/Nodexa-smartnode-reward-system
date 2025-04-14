@@ -56,6 +56,7 @@ export async function POST(request: Request) {
         password: hashedPassword,
         verifyToken,
         verifyTokenExpiry,
+        backUpCodes: '',
       },
     });
 

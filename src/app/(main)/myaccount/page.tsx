@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import toast from 'react-hot-toast';
+import TwoFactorSetupModal from '@/components/TwoFactorSetupModal';
 
 const accountSchema = z.object({
     email: z.string().email('Email is required'),
@@ -110,9 +111,13 @@ export default function MyAccount() {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     // const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [hasChanges, setHasChanges] = useState(false);
-    const [debugInfo, setDebugInfo] = useState<string | null>(null);
     const [isPasswordChange, setIsPasswordChange] = useState(false);
     const [isValid, setIsValid] = useState(false);
+    const [is2FASetupOpen, setIs2FASetupOpen] = useState(false);
+    const [is2FADisabled, setIs2FADisabled] = useState(false);
+    const [qrCode, setQrCode] = useState<string | null>(null);
+    const [backupCodes, setBackupCodes] = useState<string[] | null>(null);
+    const [secret, setSecret] = useState<string | null>(null);
 
     const validateForm = () => {
         try {
@@ -180,14 +185,130 @@ export default function MyAccount() {
         setIsPasswordChange(false);
     };
 
-    const handle2FAToggle = (enable: boolean) => {
-        setIs2FAEnabled(enable);
-        // TODO: Implement 2FA logic
+    const handle2FAToggle = async (enable: boolean) => {
+        if (enable) {
+            setIs2FASetupOpen(true);
+            handle2FACreate();
+        } else {
+            setIs2FADisabled(true);
+            try {
+                const response = await fetch('/api/auth/2fa/disable', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: formData.email
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to disable 2FA');
+                }
+
+                setIs2FAEnabled(false);
+                toast.success('2FA disabled successfully');
+            } catch (error) {
+                toast.error(error instanceof Error ? error.message : 'Failed to disable 2FA');
+            } finally {
+                setIs2FADisabled(false);
+            }
+        }
     };
 
-    const handleDeleteAccount = () => {
+    const handle2FACreate = async () => {
+        try {
+            console.log("Enabling 2FA");
+            console.log("formData.email", formData.email);
+            const response = await fetch('/api/auth/2fa/enable', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: formData.email }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to enable 2FA');
+            }
+
+            const data = await response.json();
+            console.log("data", data);
+
+            const qrCode = data.qrCode;
+            const backupCodes = data.backupCodes;
+            const secret = data.secret;
+
+            console.log("qrCode", qrCode);
+            console.log("backupCodes", backupCodes);
+            console.log("secret", secret);
+
+            setQrCode(qrCode);
+            setBackupCodes(backupCodes);
+            setSecret(secret);
+
+            // setIs2FASetupOpen(true);
+
+            // setIs2FAEnabled(true);
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to enable 2FA');
+            throw error;
+        }
+    };
+    
+    // Store 2FA in the database
+    const handle2FAActivate = async () => {
+        try {
+            console.log("Activating 2FA");
+            console.log("secret", secret);
+            console.log("email", formData.email);
+            console.log("backupCodes", backupCodes);
+
+            const response = await fetch('/api/auth/2fa/store2FA', {
+                method: 'POST',
+                headers: {
+                   'Content-Type' : 'application/json',
+                },
+                body: JSON.stringify({ secret, email: formData.email, backupCodes })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to store 2FA');
+            }
+
+            toast.success('2FA stored successfully');
+      
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to activate 2FA');
+            throw error;
+        }
+    };
+
+    const handle2FAEnable = async () => {
+        setIs2FASetupOpen(false);
+        setIs2FAEnabled(true);
+    };
+
+    const handleDeleteAccount = async() => {
         // TODO: Implement delete account logic
-        console.log("Delete account clicked");
+        try {
+            const response = await fetch('/api/auth/myaccount/deleteaccount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Invalid delete account');
+            }
+            toast.success('User account was deleted successfully');
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed Delete Account');
+        } 
     };
 
     const handleUpdateAccount = async () => {
@@ -375,11 +496,6 @@ export default function MyAccount() {
                 </div>
             ) : (
                 <>
-                    {/* {successMessage && (
-                        <div className="mb-6 p-4 bg-green-800 text-white rounded-md">
-                            {successMessage}
-                        </div>
-                    )} */}
 
                     {/* Email Section */}
                     <div className="flex flex-col justify-center items-start">
@@ -475,20 +591,37 @@ export default function MyAccount() {
                         <div className="flex flex-row justify-start items-center gap-[20px]">
                             <button
                                 onClick={() => handle2FAToggle(true)}
-                                className="w-[109px] h-[35px] bg-[#3CDD22] text-white text-[14px] font-family-sora font-bold 
-                                px-[25px] py-[7px] rounded-[32px] hover:opacity-90 transition-opacity cursor-pointer"
+                                disabled={is2FAEnabled}
+                                className={`w-[109px] h-[35px] bg-[#3CDD22] text-white text-[14px] font-family-sora font-bold 
+                                px-[25px] py-[7px] rounded-[32px] hover:opacity-90 transition-opacity cursor-pointer ${
+                                    is2FAEnabled ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
                             >
                                 ENABLE
                             </button>
                             <button
                                 onClick={() => handle2FAToggle(false)}
-                                className="w-[109px] h-[35px] bg-[#FF5252] text-white text-[14px] font-family-sora font-bold 
-                                px-[25px] py-[7px] rounded-[32px] hover:opacity-90 transition-opacity cursor-pointer"
+                                disabled={!is2FAEnabled || is2FADisabled}
+                                className={`w-[109px] h-[35px] bg-[#FF5252] text-white text-[14px] font-family-sora font-bold 
+                                px-[25px] py-[7px] rounded-[32px] hover:opacity-90 transition-opacity cursor-pointer ${
+                                    !is2FAEnabled || is2FADisabled ? 'opacity-50 cursor-not-allowed' : ''
+                                }`}
                             >
                                 DISABLE
                             </button>
                         </div>
                     </div>
+
+                    <TwoFactorSetupModal
+                        isOpen={is2FASetupOpen}
+                        onClose={() => setIs2FASetupOpen(false)}
+                        onEnable={handle2FAEnable}
+                        onActivate={handle2FAActivate}
+                        email={formData.email}
+                        qrCode={qrCode || ''}
+                        backupCodes={backupCodes || []}
+                        secret={secret || ''}
+                    />
 
                     <Divider />
 

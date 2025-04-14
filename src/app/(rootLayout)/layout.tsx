@@ -5,8 +5,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Nodexa Hosting",
+  title: "Nodexa Rewards System",
   description: "nodexa smartnodes rewards system",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function MainLayout({

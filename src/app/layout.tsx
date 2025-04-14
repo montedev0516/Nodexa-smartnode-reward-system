@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Smart Node Reward System',
   description: 'A reward system for smart node operators',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
