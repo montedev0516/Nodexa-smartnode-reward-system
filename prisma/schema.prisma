@@ -46,3 +46,17 @@ model NeoxaPriceHistory {
   timestamp DateTime @default(now())
   createdAt DateTime @default(now())
 }
+
+model Notification {
+  id          String   @id @default(cuid())
+  title       String
+  message     String
+  type        String   // 'global' or 'user'
+  priceChange Float?
+  isMaxPrice  Boolean?
+  isMinPrice  Boolean?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+}
