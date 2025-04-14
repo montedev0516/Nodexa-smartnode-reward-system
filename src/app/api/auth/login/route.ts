@@ -92,7 +92,7 @@ export async function POST(request: Request) {
         email: user.email
       },
       secret,
-      { expiresIn: '7d' }
+      { expiresIn: '1h' }
     );
 
     // Set the authentication cookie
@@ -102,8 +102,8 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      // Set expiration to 7 days
-      maxAge: 7 * 24 * 60 * 60
+      // Set expiration to 1h
+      maxAge: 60 * 60
     });
 
     return NextResponse.json({

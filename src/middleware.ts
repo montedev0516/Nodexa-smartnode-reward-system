@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import jwt from 'jsonwebtoken'
 
 // List of public paths that don't require authentication
 const publicPaths = [
@@ -31,6 +32,39 @@ const publicPaths = [
   '/500',
 ]
 
+// Helper function to validate JWT token format
+function isValidJwtFormat(token: string): boolean {
+  const parts = token.split('.');
+  return parts.length === 3 && 
+         parts.every(part => /^[A-Za-z0-9-_]+$/.test(part));
+}
+
+// Helper function to validate JWT token
+function validateJwtToken(token: string): boolean {
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      console.error('JWT_SECRET is not set');
+      return false;
+    }
+    
+    // Verify the token and get decoded payload
+    const decoded = jwt.verify(token, secret) as { iat: number };
+    
+    // Check if token is older than 1 hour (3600 seconds)
+    const tokenAge = Math.floor(Date.now() / 1000) - decoded.iat;
+    if (tokenAge > 3600) {
+      console.log('Token expired (older than 1 hour)');
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('JWT validation error:', error);
+    return false;
+  }
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -39,12 +73,17 @@ export function middleware(request: NextRequest) {
 
   // Get the token from the cookies
   const token = request.cookies.get('auth-token')?.value
+  console.log('##middleware##Token:', token);
 
   // If the path is public, allow access
   if (isPublicPath) {
+    console.log('##middleware##isPublicPath:', isPublicPath);
     // If user is already logged in and tries to access login/signup pages, redirect to dashboard
     if (token && (pathname === '/login' || pathname === '/signup')) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      // Validate token before redirecting
+      if (isValidJwtFormat(token) && validateJwtToken(token)) {
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
     }
     return NextResponse.next()
   }
@@ -56,7 +95,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // If there's a token and the path is not public, allow access
+  // Validate token format and signature
+  if (!isValidJwtFormat(token) || !validateJwtToken(token)) {
+    // Clear invalid token
+    const response = NextResponse.redirect(new URL('/login', request.url))
+    response.cookies.delete('auth-token')
+    return response
+  }
+
+  // If there's a valid token and the path is not public, allow access
   return NextResponse.next()
 }
 
