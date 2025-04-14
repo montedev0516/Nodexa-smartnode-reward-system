@@ -12,7 +12,13 @@ export default function PrivateNodes() {
         }}
        >
            <PrivateHostingPlan />
-           <SmartNodesSetUp/>
+           <main className="pt-6 pb-[230px]">
+            <div className="w-full flex flex-col justify-center items-center text-center">
+                <div className="w-full text-[30px] font-family-sora font-bold py-[20px]">SMARTNODE SETUP</div>
+                <div className="w-full h-[2px] bg-gradient-to-r from-[#221E45] via-[#00AEB9] to-[#221E45] mb-[40px]" />
+                <SmartNodesSetUp/>
+           </div>
+        </main>
        </main>
     )
 }

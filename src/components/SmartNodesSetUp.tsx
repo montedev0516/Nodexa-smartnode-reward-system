@@ -254,16 +254,16 @@ const Step3 = ({ onBack, onNext, output, setOutput, showBackButton = true }: Ste
                         <div className="flex flex-col text-[#00AEB9] font-mono text-sm">
                             {commandLines.map((line, index) => (
                                 <div key={index} className="flex flex-wrap items-center">
-                                    <span className="break-all overflow-wrap-anywhere w-full md:w-auto">{line}</span>
+                                    <span className="inline break-all">{line}</span>
                                     {index === commandLines.length - 1 && (
                                         <button
                                             onClick={handleCopy}
-                                            className="mt-2 md:mt-0 md:ml-4 inline-flex items-center gap-2 px-4 rounded-full border border-[#EC008C] text-[#EC008C] hover:opacity-80 transition-opacity"
+                                            className="relative -top-[1px] inline-flex items-center gap-2 px-4 ml-2 rounded-full border border-[#EC008C] text-[#EC008C] hover:opacity-80 transition-opacity"
                                         >
                                             Copy
                                             <Image
                                                 src="/nodedetail/copy-icon.svg"
-                                                alt= "copy-icon"
+                                                alt="copy-icon"
                                                 width={16}
                                                 height={16}
                                                 className="w-[16px] h-[16px]"
@@ -349,16 +349,16 @@ const Step4 = ({ onBack, onNext, output, setOutput, showBackButton = true }: Ste
                         <div className="flex flex-col text-[#00AEB9] font-mono text-sm">
                             {commandLines.map((line, index) => (
                                 <div key={index} className="flex flex-wrap items-center">
-                                    <span className="break-all overflow-wrap-anywhere w-full md:w-auto">{line}</span>
+                                    <span className="inline break-all">{line}</span>
                                     {index === commandLines.length - 1 && (
                                         <button
                                             onClick={handleCopy}
-                                            className="mt-2 md:mt-0 md:ml-4 inline-flex items-center gap-2 px-4 rounded-full border border-[#EC008C] text-[#EC008C] hover:opacity-80 transition-opacity"
+                                            className="relative -top-[1px] inline-flex items-center gap-2 px-4 ml-2 rounded-full border border-[#EC008C] text-[#EC008C] hover:opacity-80 transition-opacity"
                                         >
                                             Copy
                                             <Image
                                                 src="/nodedetail/copy-icon.svg"
-                                                alt= "copy-icon"
+                                                alt="copy-icon"
                                                 width={16}
                                                 height={16}
                                                 className="w-[16px] h-[16px]"
@@ -445,16 +445,16 @@ const Step5 = ({ onBack, onNext, output, setOutput, onDeploy, showBackButton = t
                         <div className="flex flex-col text-[#00AEB9] font-mono text-sm">
                             {commandLines.map((line, index) => (
                                 <div key={index} className="flex flex-wrap items-center">
-                                    <span className="break-all overflow-wrap-anywhere w-full md:w-auto">{line}</span>
+                                    <span className="inline break-all">{line}</span>
                                     {index === commandLines.length - 1 && (
                                         <button
                                             onClick={handleCopy}
-                                            className="mt-2 md:mt-0 md:ml-4 inline-flex items-center gap-2 px-4 rounded-full border border-[#EC008C] text-[#EC008C] hover:opacity-80 transition-opacity"
+                                            className="relative -top-[1px] inline-flex items-center gap-2 px-4 ml-2 rounded-full border border-[#EC008C] text-[#EC008C] hover:opacity-80 transition-opacity"
                                         >
                                             Copy
                                             <Image
                                                 src="/nodedetail/copy-icon.svg"
-                                                alt= "copy-icon"
+                                                alt="copy-icon"
                                                 width={16}
                                                 height={16}
                                                 className="w-[16px] h-[16px]"
@@ -509,7 +509,7 @@ interface SuccessStepProps {
 const SuccessStep = ({ onDashboard, onClose }: SuccessStepProps) => (
     <div className='w-full max-w-[913px] h-full rounded-[27px] border-1 border-[#00AEB9] bg-[#1C1840] pb-[48px] relative'>
         {onClose && (
-            <button 
+            <button
                 onClick={onClose}
                 className="absolute top-4 right-4 text-[#00AEB9] hover:opacity-80"
             >
@@ -605,71 +605,63 @@ export default function SmartNodesSetUp({ initialStep = 1, onClose }: SmartNodes
 
     if (isSuccess) {
         return (
-            <main className="pt-6 pb-[230px]">
-                <div className="w-full flex flex-col justify-center items-center text-center">
-                <div className="w-full text-[30px] font-family-sora font-bold py-[20px]">SMARTNODE SETUP</div>
-                <div className="w-full h-[2px] bg-gradient-to-r from-[#221E45] via-[#00AEB9] to-[#221E45] mb-[40px]" />
+            
                     <SuccessStep onDashboard={handleDashboard} onClose={onClose} />
-                </div>
-            </main>
+                
         );
     }
 
     return (
-        <main className="pt-6 pb-[230px]">
-            <div className="w-full flex flex-col justify-center items-center text-center">
-                <div className="w-full text-[30px] font-family-sora font-bold py-[20px]">SMARTNODE SETUP</div>
-                <div className="w-full h-[2px] bg-gradient-to-r from-[#221E45] via-[#00AEB9] to-[#221E45] mb-[40px]" />
 
-                {currentStep === 1 && (
-                    <Step1
-                        onNext={handleNext}
-                        transactionId={transactionId}
-                        setTransactionId={setTransactionId}
-                    />
-                )}
+        <>
+            {currentStep === 1 && (
+                <Step1
+                    onNext={handleNext}
+                    transactionId={transactionId}
+                    setTransactionId={setTransactionId}
+                />
+            )}
 
-                {currentStep === 2 && (
-                    <Step2
-                        onBack={handleBack}
-                        onNext={handleNext}
-                        addresses={addresses}
-                        setAddresses={setAddresses}
-                        showBackButton={currentStep !== initialStep}
-                    />
-                )}
+            {currentStep === 2 && (
+                <Step2
+                    onBack={handleBack}
+                    onNext={handleNext}
+                    addresses={addresses}
+                    setAddresses={setAddresses}
+                    showBackButton={currentStep !== initialStep}
+                />
+            )}
 
-                {currentStep === 3 && (
-                    <Step3
-                        onBack={handleBack}
-                        onNext={handleNext}
-                        output={output}
-                        setOutput={setOutput}
-                        showBackButton={currentStep !== initialStep}
-                    />
-                )}
+            {currentStep === 3 && (
+                <Step3
+                    onBack={handleBack}
+                    onNext={handleNext}
+                    output={output}
+                    setOutput={setOutput}
+                    showBackButton={currentStep !== initialStep}
+                />
+            )}
 
-                {currentStep === 4 && (
-                    <Step4
-                        onBack={handleBack}
-                        onNext={handleNext}
-                        output={step4Output}
-                        setOutput={setStep4Output}
-                        showBackButton={currentStep !== initialStep}
-                    />
-                )}
+            {currentStep === 4 && (
+                <Step4
+                    onBack={handleBack}
+                    onNext={handleNext}
+                    output={step4Output}
+                    setOutput={setStep4Output}
+                    showBackButton={currentStep !== initialStep}
+                />
+            )}
 
-                {currentStep === 5 && (
-                    <Step5
-                        onBack={handleBack}
-                        onNext={handleNext}
-                        output={step5Output}
-                        setOutput={setStep5Output}
-                        onDeploy={handleDeploy}
-                        showBackButton={currentStep !== initialStep}
-                    />
-                )}
-            </div>
-        </main>
+            {currentStep === 5 && (
+                <Step5
+                    onBack={handleBack}
+                    onNext={handleNext}
+                    output={step5Output}
+                    setOutput={setStep5Output}
+                    onDeploy={handleDeploy}
+                    showBackButton={currentStep !== initialStep}
+                />
+            )}
+        </>
     );
 }

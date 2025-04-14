@@ -17,11 +17,11 @@ export default function MainLayout({
 }>) {
   return (
     <>
-      {/* <ProtectedLayout> */}
+      <ProtectedLayout>
         <Navbar />
         {children}
         <Footer />
-      {/* </ProtectedLayout> */}
+      </ProtectedLayout>
     </>
   );
 }
