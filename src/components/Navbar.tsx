@@ -133,7 +133,7 @@ export default function Navbar() {
             <Image src="navbar/logo-nodexa.svg" alt="Nodexa Hosting" width={200} height={50} className="w-[200px] h-[60px] shrink-0" />
           </button>
         </Link>
-        <div className="hidden xl:flex space-x-4">
+        <div className="hidden xl:flex space-x-8">
           <Link href="/sharednodes" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">SHARED NODES</Link>
           <Link href="/privatenodes" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">PRIVATE NODES</Link>
           <Link href="/dashboard" className="hover:text-blue-400 font-family-sora text-xl text-[#B0B0B0] transition-colors duration-400">DASHBOARD</Link>

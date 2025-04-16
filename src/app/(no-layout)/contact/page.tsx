@@ -1,4 +1,56 @@
+"use client";
+
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      console.log("data", data);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      toast.success('Message sent successfully!');
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: ''
+      });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to send message');
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   return (
     <main className="min-h-screen bg-[#080525] text-white px-[20px] sm:px-[100px] py-[130px]">
       <div className="flex flex-col justify-center items-center">
@@ -10,36 +62,48 @@ export default function Contact() {
           </div>
         </div>
         <div className="w-[300px] sm:w-[527px] py-[30px]">
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block font-family-poppins text-[18px] font-bold py-[10px]">
+              <label htmlFor="firstName" className="block font-family-poppins text-[18px] font-bold py-[10px]">
                 First Name
               </label>
               <input
                 type="text"
-                id="name"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
                 className="w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder="Enter your first name"
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-[18px] font-bold py-[10px]">
+              <label htmlFor="lastName" className="block text-[18px] font-bold py-[10px]">
                 Last Name
               </label>
               <input
-                type="email"
-                id="email"
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
                 className="w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder="Enter your last name"
               />
             </div>
             <div>
-              <label htmlFor="subject" className="block text-[18px] font-bold py-[10px]">
+              <label htmlFor="email" className="block text-[18px] font-bold py-[10px]">
                 Email Address
               </label>
               <input
-                type="text"
-                id="subject"
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
                 className="w-full px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 placeholder="Enter your email"
               />
@@ -50,6 +114,10 @@ export default function Contact() {
               </label>
               <textarea
                 id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                required
                 rows={6}
                 className="w-full h-[268px] px-3 py-2 border-1 border-[#00AEB9] bg-[#1C1840] rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
                 placeholder="Enter your message"
@@ -67,5 +135,5 @@ export default function Contact() {
         </div>
       </div>
     </main>
-  )
-} 
+  );
+}

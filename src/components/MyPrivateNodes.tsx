@@ -131,6 +131,7 @@ const NodeRow = ({ node, onDetailClick }: { node: NodeData; onDetailClick: () =>
                             node.status === 'Online' ? 'text-green-400' :
                             node.status === 'Syncing' ? 'text-yellow-400' : 'text-red-400'
                         }`}>{node.status}</span>
+                        <StatusComponent status={node.status} />
                     </div>
                     <button 
                         onClick={handleRefresh}

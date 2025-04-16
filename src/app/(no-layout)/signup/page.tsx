@@ -76,7 +76,8 @@ export default function SignUp() {
       setErrors({});
       return true;
     } catch (error) {
-      toast.error('Please check your inputs!');
+      toast.error('Please match the format of the inputs!');
+      toast.success('Password must be at least 8 characters, contain at least one uppercase letter, one lowercase letter, one number, and one special character!');
       if (error instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {};
         error.errors.forEach(err => {

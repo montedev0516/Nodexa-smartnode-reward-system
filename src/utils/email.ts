@@ -26,4 +26,17 @@ export async function sendVerificationEmail(email: string, verificationUrl: stri
   };
 
   await transporter.sendMail(mailOptions);
+}
+
+export async function sendEmail({ To, Subject, Html }: { To: string; Subject: string; Html: string }) {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: To,
+    subject: Subject,
+    html: Html,
+  };
+
+  console.log("mailOptions", mailOptions);
+
+  await transporter.sendMail(mailOptions);
 } 

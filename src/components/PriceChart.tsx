@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { format, parseISO } from "date-fns";
 import {
@@ -26,6 +25,19 @@ interface PriceChartProps {
 const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
   // Use provided price data or fallback to empty array
   const data = useMemo(() => priceData, [priceData]);
+
+  let maxPrice = data[0].price;
+  let minPrice = data[0].price;
+  for(let i=0;i<data.length;i++){
+    // console.log(data[i].price);
+    if(data[i].price > maxPrice){
+      maxPrice = data[i].price;
+    }
+    if(data[i].price < minPrice){
+      minPrice = data[i].price;
+    }
+  }
+  
   
   // Calculate current price (last price in the array)
   const currentPrice = useMemo(() => {
@@ -34,16 +46,27 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
   }, [data]);
   
   // Calculate min and max for Y axis - fixed range of 0.0003 with current price in middle
-  const yAxisRange = 0.0003;
+  const yAxisRange = (maxPrice - minPrice) * 1.5;
+
   const priceMin = useMemo(() => {
     // Set min to half the range below current price
-    return currentPrice - (yAxisRange / 2);
-  }, [currentPrice, yAxisRange]);
-  
+    return minPrice - ((maxPrice - minPrice) / 4);
+  }, [maxPrice, minPrice]);
+
   const priceMax = useMemo(() => {
-    // Set max to half the range above current price
-    return currentPrice + (yAxisRange / 2);
-  }, [currentPrice, yAxisRange]);
+    // Set min to half the range below current price
+    return maxPrice + ((maxPrice - minPrice) / 4);
+  }, [maxPrice, minPrice]);
+  
+  // Calculate tick values for Y axis
+  const yAxisTicks = useMemo(() => {
+    const range = priceMax - priceMin;
+    const tickCount = 5;
+    const tickStep = range / (tickCount - 1);
+    return Array.from({ length: tickCount }, (_, i) => 
+      Number((priceMin + (tickStep * i)).toFixed(8))
+    );
+  }, [priceMin, priceMax]);
   
   // Determine the time format for X axis based on the selected range
   const getTimeFormat = () => {
@@ -98,7 +121,7 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-[#1A1F2C] p-4 rounded-md shadow-lg border border-gray-700 text-white">
+        <div className="bg-[#080525] p-4 rounded-md shadow-lg border border-gray-700 text-white">
           <p className="font-medium text-white">
             {format(parseISO(data.timestamp), 'MMM d, h:mm a')}
           </p>
@@ -131,14 +154,14 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
   // Empty state when no data is available
   if (data.length === 0) {
     return (
-      <div className="w-full h-[400px] bg-[#121826] rounded-lg p-4 flex items-center justify-center">
+      <div className="w-full h-[400px] bg-[#080525] rounded-lg p-4 flex items-center justify-center">
         <p className="text-gray-400">No price data available</p>
       </div>
     );
   }
   
   return (
-    <div className="w-full h-[400px] bg-[#121826] rounded-lg p-4">
+    <div className="w-full h-[400px] bg-[#080525] rounded-lg p-4">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
@@ -147,12 +170,12 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
           <defs>
             <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
               <stop
-                offset="5%"
+                offset="0%"
                 stopColor={chartColor}
                 stopOpacity={0.3}
               />
               <stop
-                offset="95%"
+                offset="100%"
                 stopColor={chartColor}
                 stopOpacity={0}
               />
@@ -174,7 +197,9 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
             axisLine={{ stroke: "#2F3747" }}
             tickLine={{ stroke: "#2F3747" }}
             orientation="right"
-            padding={{ top: 10, bottom: 10 }}
+            padding={{ top: 0, bottom: 0 }}
+            ticks={yAxisTicks}
+            tickCount={5}
           />
           <CartesianGrid strokeDasharray="3 3" stroke="#2F3747" opacity={0.3} />
           <Tooltip content={<CustomTooltip />} />

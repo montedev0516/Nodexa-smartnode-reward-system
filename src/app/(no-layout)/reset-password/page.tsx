@@ -5,6 +5,7 @@ import ReCaptcha from '@/utils/reCaptcha';
 import ShowResetVerificationModal from '@/components/ShowResetVerificationModal';
 import { z } from 'zod';
 import ReCAPTCHA from 'react-google-recaptcha';
+import toast from 'react-hot-toast';
 
 const resetPasswordSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -32,6 +33,7 @@ export default function ResetPassword() {
 
   const validateForm = () => {
     if (!recaptchaToken) {
+      toast.error('Please complete the reCAPTCHA verification');
       setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
       return false;
     }
@@ -40,6 +42,7 @@ export default function ResetPassword() {
       setErrors({});
       return true;
     } catch (error) {
+      toast.error('Please enter a valid email address');
       if (error instanceof z.ZodError) {
         const newErrors: { [key: string]: string } = {};
         error.errors.forEach(err => {
@@ -59,6 +62,7 @@ export default function ResetPassword() {
     if (!validateForm()) return;
 
     if (!recaptchaToken) {
+      toast.error('Please complete the reCAPTCHA verification');
       setErrors(prev => ({ ...prev, recaptcha: 'Please complete the reCAPTCHA verification' }));
       return;
     }
@@ -82,15 +86,19 @@ export default function ResetPassword() {
         // Reset reCAPTCHA on error
         recaptchaRef.current?.reset();
         setRecaptchaToken(null);
-        throw new Error(data.error ||'Failed to reset password');
+        toast.error(data.error || 'Failed to reset password');
+        return;
+        // throw new Error(data.error ||'Failed to reset password');
       }
-
+      
+      toast.success('Password reset link sent to your email');
       // Show verification modal instead of success message
       setShowResetVerificationModal(true);
       
       console.log('Reset password requested for:', { email, recaptchaToken });
     } catch (error) {
       console.error('Reset password error:', error);
+      toast.error('Failed to reset password. Please try again.');
       setErrors(prev => ({
         ...prev,
         submit: error instanceof Error ? error.message : 'Failed to reset password. Please try again.'
@@ -163,9 +171,9 @@ export default function ResetPassword() {
                 placeholder="Enter your email"
                 required
               />
-              {errors.email && (
+              {/* {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-              )}
+              )} */}
             </div>
             
             <div className="flex justify-center items-center">
@@ -192,9 +200,9 @@ export default function ResetPassword() {
                 {isSubmitting ? 'Sending...' : 'Reset Password'}
               </button>
             </div>
-            {errors.submit && (
+            {/* {errors.submit && (
               <p className="text-sm text-red-500 text-center">{errors.submit}</p>
-            )}
+            )} */}
           </form>
         </div>
       </div>

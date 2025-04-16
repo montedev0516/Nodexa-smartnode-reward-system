@@ -79,9 +79,9 @@ export default function TwoFactorSetupModal({ isOpen, onClose, onEnable, onActiv
 
                 {/* Recovery Code Section */}
                 <div className="mb-6">
-                    <h3 className="text-white font-semibold mb-2">1. Recovery Code</h3>
+                    <h3 className="text-white font-regular mb-2">1. Recovery Code</h3>
                     <div className="flex flex-row justify-between">
-                        <div className="flex w-full border-[#00AEB9] border-1 p-4 rounded-lg mb-2">
+                        <div className="flex w-full border-[#00AEB9] border-1 p-4 rounded-lg mb-2 overflow-x-auto">
                             {backupCodes.length > 0 ? (
                                 backupCodes.map((code, index) => (
                                     <p key={index} className="text-white font-mono flex-1">{code}</p>
@@ -105,7 +105,7 @@ export default function TwoFactorSetupModal({ isOpen, onClose, onEnable, onActiv
                             />
                         </button>
                     </div>
-                    <p className="text-gray-400 text-sm mt-2">
+                    <p className="text-white font-regular mt-2">
                         Copy and store the recovery code in a safe place before you continue to step 2.
                         The Recovery code can be used in case you can not receive 2fa code.
                     </p>
@@ -113,7 +113,7 @@ export default function TwoFactorSetupModal({ isOpen, onClose, onEnable, onActiv
 
                 {/* QR Code Section */}
                 <div className="mb-6">
-                    <h3 className="text-white font-semibold mb-2">
+                    <h3 className="text-white font-regular mb-2">
                         2. Scan the barcode below with your Two Factor Authentication app
                     </h3>
                     <div className="bg-white p-4 rounded-lg flex justify-center">
@@ -129,7 +129,7 @@ export default function TwoFactorSetupModal({ isOpen, onClose, onEnable, onActiv
 
                 {/* Verification Code Section */}
                 <div className="mb-6">
-                    <h3 className="text-white font-semibold mb-2">
+                    <h3 className="text-white font-regular mb-2">
                         3. After scanning the barcode the app will generate a six-digit code. Please enter the code here and press Enable button.
                     </h3>
                     <input
@@ -156,7 +156,7 @@ export default function TwoFactorSetupModal({ isOpen, onClose, onEnable, onActiv
                             isLoading || verificationCode.length !== 6 ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'
                         }`}
                     >
-                        {isLoading ? 'Activating...' : 'Activate'}
+                        {isLoading ? 'Activating...' : 'Enable'}
                     </button>
                 </div>
             </div>

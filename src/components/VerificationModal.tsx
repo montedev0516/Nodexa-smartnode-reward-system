@@ -54,9 +54,9 @@ export default function VerificationModal({
         <div className="w-full h-[2px] bg-gradient-to-r from-[#272E50] via-[#00AEB9] to-[#272E50] mb-[5px]"></div>
         <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">Thanks for Signing Up!</p>
         <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">We have sent a verification link to your email. </p>
-        <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">Please check your inbox/spam messages and click the link to</p>
-        <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[15px]">complete the sign-up process.</p>
-        <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[10px]">If you have not received email please press Resend button.</p>
+        <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">Please check your inbox/spam messages and </p>
+        <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[15px]">click the link to complete the sign-up process.</p>
+        <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[10px]">If you have not received, please press Resend button.</p>
         {/* {error && (
           <p className="text-red-500 text-sm mb-4">{error}</p>
         )} */}

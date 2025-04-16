@@ -102,7 +102,7 @@ export default function NeoxaPriceChart() {
 
   return (
     <div className="w-full h-full rounded-lg  flex flex-col">
-        <div className="bg-[#121826] border border-[#2F3747] rounded-lg px-[42px] py-[32px]">
+        <div className="bg-[#080525] border border-[#2F3747] rounded-lg px-[42px] py-[32px]">
           <div className="flex justify-between">
             <h3 className="text-white text-xl font-semibold">NEOXA</h3>
             <h3 className="text-white text-xl font-semibold">${currentPrice?.toFixed(5)}USD</h3>

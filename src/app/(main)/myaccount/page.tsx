@@ -482,6 +482,33 @@ export default function MyAccount() {
 
             return () => clearTimeout(redirectTimer);
         }
+
+        // Check if 2FA is enabled
+        async function check2FAEnabled() {
+            try {
+                const response = await fetch(`/api/auth/2fa/enable?email=
+                    ${encodeURIComponent(formData.email)}`
+                );
+
+                 if (!response.ok) {
+                    throw new Error('Failed to check 2FA status');
+                }
+
+                const data = await response.json();
+                console.log('2FA status:', data);
+
+                setIs2FAEnabled(data.is2FAEnabled);
+                console.log('2FA status:', data.is2FAEnabled);
+            } catch (error) {
+                console.error('Error checking 2FA status:', error);
+                return false;
+            }
+        }
+
+        if (formData.email) {
+            check2FAEnabled();
+        }
+        
     }, [status, session, isAuthenticated, authLoading, router, user]);
 
     useEffect(() => {

@@ -125,19 +125,19 @@ export default function Neoxa() {
       <h2 className="text-[40px] font-family-sora font-semibold text-center pb-5">NEOXA</h2>
       {/* Content for Neoxa section */}
       <div className="flex flex-wrap gap-[18px] xl:flex-nowrap xl:justify-between">
-        <div className="inline-block w-full p-[1px] bg-gradient-to-r from-[#1ec0ca] to-[#ec008c] rounded-[20px]">
+        <div className="inline-block w-full p-[2px] linearGradient rounded-[20px]">
           <div className="flex flex-col items-center justify-center w-full h-[90px] bg-[#272E50] text-white px-4 py-2 rounded-[20px]">
             <h5 className="text-semibold text-[22px] text-white ">Marketcap</h5>
             <h5 className="text-semibold text-[24px] text-[#B0B0B0]">{neoxaPriceData ? formatCurrency(neoxaPriceData.marketCap) : '$100.000.000'}</h5>
           </div>
         </div>
-        <div className="inline-block w-full p-[1px] bg-gradient-to-r from-[#1ec0ca] to-[#ec008c] rounded-[20px]">
+        <div className="inline-block w-full p-[2px] linearGradient rounded-[20px]">
           <div className="flex flex-col items-center justify-center w-full h-[90px] bg-[#272E50] text-white px-4 py-2 rounded-[20px]">
             <h5 className="text-semibold text-[22px] text-white ">Price</h5>
             <h5 className="text-semibold text-[24px] text-[#B0B0B0]">{neoxaPriceData ? formatCurrency(neoxaPriceData.price) : '$0.0016'}</h5>
           </div>
         </div>
-        <div className="inline-block w-full p-[1px] bg-gradient-to-r from-[#1ec0ca] to-[#ec008c] rounded-[20px]">
+        <div className="inline-block w-full p-[2px] linearGradient rounded-[20px]">
           <div className="flex flex-col items-center justify-center w-full h-[90px] bg-[#272E50] text-white px-4 py-2 rounded-[20px]">
             <h5 className="text-semibold text-[22px] text-white ">Circulation Supply</h5>
             <div className="flex justify-between items-center gap-2">
@@ -146,7 +146,7 @@ export default function Neoxa() {
             </div>
           </div>
         </div>
-        <div className="inline-block w-full p-[1px] bg-gradient-to-r from-[#1ec0ca] to-[#ec008c] rounded-[20px]">
+        <div className="inline-block w-full p-[2px] linearGradient rounded-[20px]">
           <div className="flex flex-col items-center justify-center w-full h-[90px] bg-[#272E50] text-white px-4 py-2 rounded-[20px]">
             <h5 className="text-semibold text-[22px] text-white ">Max Supply</h5>
             <div className="flex justify-between items-center gap-2">

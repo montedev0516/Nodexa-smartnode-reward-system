@@ -14,8 +14,8 @@ export default function ShowResetVerificationModal({
                 <h2 className="text-center text-[20px] font-bold font-family-sora text-white mb-[5px]">Reset password request</h2>
                 <div className="w-full h-[2px] bg-gradient-to-r from-[#272E50] via-[#00AEB9] to-[#272E50] mb-[5px]"></div>
                 <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">We have sent a reset link to your email.</p>
-                <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">Please check your inbox/spam messages and follow the link to</p>
-                <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">create a new password.</p>
+                <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">Please check your inbox/spam messages and </p>
+                <p className="text-center text-[16px] font-family-sora font-regular text-white mb-[5px]">follow the link to create a new password.</p>
             </div>
         </div>
     )
