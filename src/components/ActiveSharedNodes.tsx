@@ -42,7 +42,7 @@ const sharedNodesData: SharedNode[] = [
 
 const SharedNodeCard = ({ node }: { node: SharedNode }) => {
     return (
-        <div className="w-full sm:w-[502px] lg:w-full p-[1px] bg-gradient-to-l from-[#00AEB9] to-[#EC008C] rounded-[76px]">
+        <div className="w-full sm:w-[502px] lg:w-full p-[1px] bg-linear-to-l from-[#00AEB9] from-5% via-[#7657A2] via-50% to-[#EC008C] rounded-[76px]">
             {/* Desktop View */}
             <div className="hidden lg:flex w-full flex-row justify-between items-center gap-[20px] bg-[#1C1840] rounded-[76px] px-[40px] xl:px-[95px] py-[10px]">
                 <div className="text-[18px] text-white font-family-sora font-regular">#{node.id}</div>

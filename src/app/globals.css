@@ -131,6 +131,9 @@ body {
 .linearGradient {
   background-image: linear-gradient(-142deg, #EC008C, #00AEB9 80%);
 }
+.linearGradient2 {
+  background-image: linear-gradient(-115deg, #EC008C, #00AEB9 95%);
+}
 @keyframes statusActive {
   0% {
     background: rgba(87, 240, 96, 1);

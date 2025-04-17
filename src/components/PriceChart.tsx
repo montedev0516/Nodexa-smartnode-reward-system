@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  Label,
 } from "recharts";
 
 interface PriceData {
@@ -28,23 +29,23 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
 
   let maxPrice = data[0].price;
   let minPrice = data[0].price;
-  for(let i=0;i<data.length;i++){
+  for (let i = 0; i < data.length; i++) {
     // console.log(data[i].price);
-    if(data[i].price > maxPrice){
+    if (data[i].price > maxPrice) {
       maxPrice = data[i].price;
     }
-    if(data[i].price < minPrice){
+    if (data[i].price < minPrice) {
       minPrice = data[i].price;
     }
   }
-  
-  
+
+
   // Calculate current price (last price in the array)
   const currentPrice = useMemo(() => {
     if (data.length === 0) return 0.00025;
     return data[data.length - 1].price;
   }, [data]);
-  
+
   // Calculate min and max for Y axis - fixed range of 0.0003 with current price in middle
   const yAxisRange = (maxPrice - minPrice) * 1.5;
 
@@ -57,17 +58,17 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
     // Set min to half the range below current price
     return maxPrice + ((maxPrice - minPrice) / 4);
   }, [maxPrice, minPrice]);
-  
+
   // Calculate tick values for Y axis
   const yAxisTicks = useMemo(() => {
     const range = priceMax - priceMin;
     const tickCount = 5;
     const tickStep = range / (tickCount - 1);
-    return Array.from({ length: tickCount }, (_, i) => 
+    return Array.from({ length: tickCount }, (_, i) =>
       Number((priceMin + (tickStep * i)).toFixed(8))
     );
   }, [priceMin, priceMax]);
-  
+
   // Determine the time format for X axis based on the selected range
   const getTimeFormat = () => {
     switch (timeRange) {
@@ -89,12 +90,12 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
         return 'h:mm a';
     }
   };
-  
+
   // Determine the tick interval for X axis based on the selected range
   const getTickInterval = () => {
     const length = data.length;
     if (length === 0) return 0;
-    
+
     switch (timeRange) {
       case '1H':
         return Math.floor(length / 5); // ~5 ticks (every 2 hours)
@@ -114,7 +115,7 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
         return Math.floor(length / 6);
     }
   };
-  
+
   // Format the tooltip
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const CustomTooltip = ({ active, payload }: any) => {
@@ -133,24 +134,24 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
     }
     return null;
   };
-  
+
   // Format price labels for Y axis
   const formatYAxis = (value: number) => {
     return `$${value.toFixed(6)}`;
   };
-  
+
   // Determine if price is up from start of period
   const isPriceUp = useMemo(() => {
     if (data.length < 2) return true;
     return data[data.length - 1].price >= data[0].price;
   }, [data]);
-  
+
   const chartColor = isPriceUp ? "#4FE4B8" : "#FF5A87";
-  
+
   // Find current point for reference line (if in view)
   const currentTimestamp = new Date().toISOString();
   const isCurrentInView = data.length > 0;
-  
+
   // Empty state when no data is available
   if (data.length === 0) {
     return (
@@ -159,7 +160,7 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
       </div>
     );
   }
-  
+
   return (
     <div className="w-full h-[400px] bg-[#080525] rounded-lg p-4">
       <ResponsiveContainer width="100%" height="100%">
@@ -204,13 +205,14 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
           <CartesianGrid strokeDasharray="3 3" stroke="#2F3747" opacity={0.3} />
           <Tooltip content={<CustomTooltip />} />
           {isCurrentInView && (
-            <ReferenceLine 
-              x={currentTimestamp} 
-              stroke="#8B94A3" 
-              strokeDasharray="3 3" 
+            <ReferenceLine
+              x={currentTimestamp}
+              stroke="#8B94A3"
+              strokeDasharray="3 3"
               strokeWidth={1}
             />
           )}
+          
           <Area
             type="monotone"
             dataKey="price"
@@ -223,6 +225,20 @@ const PriceChart = ({ timeRange, priceData = [] }: PriceChartProps) => {
             dot={false}
             activeDot={{ r: 5, fill: chartColor, stroke: "#121826", strokeWidth: 2 }}
           />
+          <ReferenceLine
+            y={data[0].price}
+            stroke="#8B94A3"
+            strokeDasharray="3 3"
+            strokeWidth={1}
+          >
+            <Label
+              value={`$${data[0].price.toFixed(8)}`}
+              position={{ x: 115, y: 4 }}
+              offset={10}
+              fill="#ffffff"
+              fontSize={16}
+            />
+          </ReferenceLine>
         </AreaChart>
       </ResponsiveContainer>
     </div>

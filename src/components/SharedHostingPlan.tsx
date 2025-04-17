@@ -89,13 +89,13 @@ const hostingPlansData: HostingPlan[] = [
 
 const HostingPlanCard = ({ plan }: { plan: HostingPlan }) => {
     return (
-        <div className="w-full p-[1px] bg-gradient-to-l from-[#00AEB9] to-[#EC008C] rounded-[32px]">
+        <div className="w-full p-[1.34px] bg-linear-to-l from-[#00AEB9] from-5% via-[#7657A2] via-50% to-[#EC008C] to-95% rounded-[32px]">
             <div className="w-full h-full flex flex-col justify-center items-center space-y-[30px] bg-[#1C1840] rounded-[32px] py-[25px] px-[36px] 2xl:px-[80px]">
                 {/* Desktop Header */}
                 <div className="hidden w-full sm:flex flex-row justify-between items-center text-center">
                     <h1 className="text-[27px] text-white font-family-sora font-semibold"># {plan.id}</h1>
                     <h1 className="text-[27px] text-white font-family-sora font-semibold">Hosting Plan</h1>
-                    <div className="p-[1px] bg-gradient-to-r from-[#00AEB9] to-[#EC008C] rounded-[32px]">
+                    <div className="p-[1.5px] linearGradient2 rounded-[32px]">
                         <div className="bg-[#1C1840] rounded-[32px] font-size-[16px] font-family-sora text-white font-semibold py-[10px] px-[30px]">
                             {plan.duration}
                         </div>
