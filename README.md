@@ -331,9 +331,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 **Support**
 
-- **Documentation** - [docs.nodexa.com](https://docs.nodexa.com)
-- **Community** - [Discord](https://discord.gg/nodexa)
-- **Email** - support@nodexa.com
+- **Email** - montecristodev2025@gmail.com
+- **Telegram** - alpha_T0108
 - **Issues** - [GitHub Issues](https://github.com/your-username/nodexa-smartnode-reward-system/issues)
 
 ---
