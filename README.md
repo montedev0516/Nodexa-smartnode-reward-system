@@ -337,7 +337,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-<div align="center">
-  <p><strong>Built with ❤️ by the Nodexa Team</strong></p>
-  <p>🌟 <strong>Star this repository if you found it helpful!</strong> 🌟</p>
-</div>
