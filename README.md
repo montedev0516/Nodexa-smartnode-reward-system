@@ -138,7 +138,7 @@ Notes:
 Add screenshots to a folder like `public/screenshots/` and reference them here:
 
 ```md
-![Dashboard](public/screenshots/dashboard.png)
+![Dashboard](/public/screenshots/dashboard.png)
 ```
 
 ## API Documentation
