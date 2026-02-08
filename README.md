@@ -135,8 +135,6 @@ Notes:
 
 ## Screenshots
 
-Add screenshots to a folder like `public/screenshots/` and reference them here:
-
 ![Dashboard](/public/screenshots/dashboard.png)
 
 
