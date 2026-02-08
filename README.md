@@ -110,23 +110,23 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 DATABASE_URL=postgresql://username:password@localhost:5432/nodexa
 
 # Auth
-JWT_SECRET=replace-me-with-a-long-random-secret
+JWT_SECRET=""
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=replace-me-with-a-long-random-secret
+NEXTAUTH_SECRET=""
 
 # reCAPTCHA
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY=replace-me
-RECAPTCHA_SECRET_KEY=replace-me
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=""
+RECAPTCHA_SECRET_KEY=""
 
 # Email (SMTP)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=465
-SMTP_USER=replace-me
-SMTP_PASSWORD=replace-me
+SMTP_USER=""
+SMTP_PASSWORD=""
 EMAIL_FROM=noreply@nodexa.com
 
 # CoinMarketCap (charts / price fetch)
-COINMARKETCAP_API_KEY_CHARTS=replace-me
+COINMARKETCAP_API_KEY_CHARTS=""
 ```
 
 Notes:
@@ -139,7 +139,6 @@ Add screenshots to a folder like `public/screenshots/` and reference them here:
 
 ```md
 ![Dashboard](public/screenshots/dashboard.png)
-![Auth](public/screenshots/auth.png)
 ```
 
 ## API Documentation
