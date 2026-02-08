@@ -1,339 +1,192 @@
-# 🚀 Nodexa Smartnode Reward System
+# Nodexa Smartnode Reward System
 
 <div align="center">
   <img src="https://img.shields.io/badge/Next.js-15.2.4-black?style=for-the-badge&logo=next.js" alt="Next.js" />
-  <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Prisma-6.5.0-2D3748?style=for-the-badge&logo=prisma" alt="Prisma" />
   <img src="https://img.shields.io/badge/PostgreSQL-Database-336791?style=for-the-badge&logo=postgresql" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/TailwindCSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css" alt="TailwindCSS" />
+  <img src="https://img.shields.io/badge/TailwindCSS-4-38B2AC?style=for-the-badge&logo=tailwind-css" alt="TailwindCSS" />
 </div>
 
 <p align="center">
-  <strong>A comprehensive platform for managing Neoxa cryptocurrency smartnode hosting, rewards tracking, and user management with enterprise-grade security.</strong>
+  <strong>Neoxa smartnode hosting + reward tracking platform with secure auth, notifications, and market data.</strong>
 </p>
 
----
+## Table of Contents
 
-## 🌟 **Overview**
+1. [About](#about)
+2. [Features](#features)
+3. [Tech Stack](#tech-stack)
+4. [Installation](#installation)
+5. [Usage](#usage)
+6. [Configuration](#configuration)
+7. [Screenshots](#screenshots)
+8. [API Documentation](#api-documentation)
+9. [Contact](#contact)
 
-Nodexa Smartnode Reward System is a cutting-edge web application designed to revolutionize smartnode hosting and reward management for the Neoxa cryptocurrency ecosystem. Built with modern technologies, it provides users with seamless smartnode management, real-time reward tracking, and comprehensive analytics.
+## About
 
-### 🎯 **Key Features**
+Nodexa Smartnode Reward System was built to make smartnode hosting and reward visibility simple for the Neoxa ecosystem. It centralizes user onboarding, authentication (including 2FA), notifications, and market data so operators and users can track activity and performance in one place.
 
-- **🏗️ Smartnode Hosting Management** - Private and shared smartnode hosting plans
-- **💰 Real-time Rewards Tracking** - Live monitoring of daily and monthly rewards
-- **📊 Advanced Analytics Dashboard** - Comprehensive statistics and performance metrics
-- **🔒 Enterprise Security** - Multi-factor authentication with 2FA support
-- **💳 Integrated Billing System** - Neoxa-based payment processing
-- **📱 Responsive Design** - Mobile-first UI with modern UX
-- **🔔 Smart Notifications** - Price alerts and system notifications
-- **📈 Market Data Integration** - Real-time Neoxa price tracking
+## Features
 
----
+- **Smartnode management**: private + shared smartnode hosting plans
+- **Rewards & analytics**: dashboards for tracking performance over time
+- **Market data**: Neoxa price data + history stored in PostgreSQL
+- **Notifications**: global notifications based on recent registrations and price events
+- **Security**: email verification, password reset, reCAPTCHA protection, JWT cookie auth + NextAuth session checks
+- **2FA**: TOTP-based 2FA endpoints (enable/verify/disable) with QR support
+- **Contact form**: server-side email delivery via SMTP
 
-## 🛠️ **Technology Stack**
+## Tech Stack
 
-### **Frontend**
-- **Next.js 15.2.4** - React framework with App Router
-- **TypeScript 5.0** - Type-safe development
-- **TailwindCSS 4.0** - Utility-first CSS framework
-- **React 19** - Latest React features
-- **Chart.js & Recharts** - Data visualization
-- **Heroicons** - Beautiful SVG icons
+- **Languages**: TypeScript
+- **Frameworks**: Next.js (App Router), React, NextAuth.js
+- **Database / ORM**: PostgreSQL, Prisma
+- **UI**: Tailwind CSS, Chart.js, Recharts, Heroicons
+- **Security**: bcryptjs, reCAPTCHA, JWT (jose/jsonwebtoken), Zod validation, TOTP (otplib/speakeasy)
+- **Services / tooling**: Nodemailer (SMTP), node-cron, tsx
 
-### **Backend**
-- **Next.js API Routes** - Server-side functionality
-- **Prisma 6.5.0** - Type-safe database ORM
-- **PostgreSQL** - Robust relational database
-- **NextAuth.js 4.24.7** - Authentication framework
-- **JWT** - Secure token management
+## Installation
 
-### **Security & Authentication**
-- **bcryptjs** - Password hashing
-- **2FA Support** - TOTP with QR codes
-- **reCAPTCHA v2** - Bot protection
-- **Email Verification** - Account security
-- **Password Reset** - Secure recovery system
+### Prerequisites
 
-### **External Integrations**
-- **CoinMarketCap API** - Real-time price data
-- **SMTP Email** - Transactional emails
-- **Node Cron** - Scheduled tasks
-
----
-
-## 🚀 **Quick Start**
-
-### **Prerequisites**
-
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL 12+
-- npm or yarn package manager
 
-### **Installation**
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/nodexa-smartnode-reward-system.git
-   cd nodexa-smartnode-reward-system
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Setup**
-   ```bash
-   cp .env_sample .env
-   ```
-   
-   Configure your `.env` file with the following variables:
-   ```env
-   # Application
-   NODE_ENV=development
-   NODEXA_PUBLIC_APP_URL=http://localhost:3000
-   
-   # Database
-   DATABASE_URL=postgresql://username:password@localhost:5432/nodexa
-   
-   # Authentication
-   JWT_SECRET=your-jwt-secret-key
-   NEXTAUTH_URL=http://localhost:3000
-   NEXTAUTH_SECRET=your-nextauth-secret
-   
-   # External APIs
-   COINMARKETCAP_API_KEY=your-cmc-api-key
-   NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your-recaptcha-site-key
-   RECAPTCHA_SECRET_KEY=your-recaptcha-secret
-   
-   # Email Configuration
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=465
-   SMTP_USER=your-email@gmail.com
-   SMTP_PASSWORD=your-app-password
-   EMAIL_FROM=noreply@nodexa.com
-   ```
-
-4. **Database Setup**
-   ```bash
-   # Generate Prisma client
-   npx prisma generate
-   
-   # Run database migrations
-   npx prisma migrate dev
-   
-   # Seed the database (optional)
-   npm run seed
-   ```
-
-5. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## 📖 **Feature Documentation**
-
-### **🏠 Dashboard**
-- **Overview Statistics** - Total nodes, earnings, performance metrics
-- **Real-time Charts** - Interactive data visualization
-- **Quick Actions** - Fast access to common tasks
-- **Notification Center** - System alerts and updates
-
-### **🔧 Smartnode Management**
-
-#### **Private Nodes**
-- **Dedicated Hosting** - Full control over your smartnode
-- **Custom Configuration** - Personalized setup options
-- **Performance Monitoring** - Real-time status tracking
-- **Automated Setup** - One-click deployment
-
-#### **Shared Nodes** 
-- **Collaborative Investment** - Pool resources with other users
-- **Flexible Collateral** - Multiple investment tiers
-- **Profit Sharing** - Automatic reward distribution
-- **Risk Mitigation** - Diversified hosting approach
-
-### **💰 Rewards System**
-- **Real-time Tracking** - Live reward calculations
-- **Historical Data** - Complete earnings history
-- **Automated Payouts** - Scheduled reward distribution
-- **Tax Reporting** - Downloadable transaction records
-
-### **🔐 Security Features**
-- **Two-Factor Authentication** - TOTP-based 2FA
-- **Email Verification** - Account validation
-- **Password Security** - Bcrypt hashing
-- **Session Management** - Secure JWT tokens
-- **Rate Limiting** - DDoS protection
-
----
-
-## 🗂️ **Project Structure**
-
-```
-nodexa-smartnode-reward-system/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (main)/            # Main authenticated routes
-│   │   │   ├── dashboard/     # Dashboard page
-│   │   │   ├── privatenodes/  # Private node management
-│   │   │   ├── sharednodes/   # Shared node management
-│   │   │   ├── billing/       # Billing and payments
-│   │   │   └── myaccount/     # User account settings
-│   │   ├── (no-layout)/       # Public pages
-│   │   ├── api/               # API routes
-│   │   │   ├── auth/          # Authentication endpoints
-│   │   │   ├── notifications/ # Notification system
-│   │   │   └── ...
-│   │   └── globals.css        # Global styles
-│   ├── components/            # Reusable React components
-│   ├── hooks/                 # Custom React hooks
-│   ├── lib/                   # Utility libraries
-│   └── utils/                 # Helper functions
-├── prisma/                    # Database schema and migrations
-├── public/                    # Static assets
-└── package.json              # Project dependencies
-```
-
----
-
-## 🔧 **Configuration**
-
-### **Database Configuration**
-The application uses PostgreSQL with Prisma ORM. Key models include:
-- **User** - Authentication and profile data
-- **NeoxaPriceData** - Market data tracking
-- **Notification** - System notifications
-
-### **Authentication Setup**
-- NextAuth.js for session management
-- Custom JWT implementation
-- 2FA with TOTP support
-- Email verification system
-
-### **External Services**
-- **CoinMarketCap** - Price data and charts
-- **SMTP Email** - Transactional emails
-- **reCAPTCHA** - Bot protection
-
----
-
-## 📋 **Available Scripts**
+### Setup
 
 ```bash
-npm run dev        # Start development server
-npm run build      # Build for production
-npm run start      # Start production server
-npm run lint       # Run ESLint
-npm run seed       # Seed database with initial data
+# Clone
+git clone https://github.com/your-username/nodexa-smartnode-reward-system.git
+cd nodexa-smartnode-reward-system
+
+# Install dependencies
+npm install
 ```
 
----
+Create your `.env` file (see [Configuration](#configuration)), then:
 
-## 🚀 **Deployment**
-
-### **Production Build**
 ```bash
+# Prisma
+npx prisma generate
+npx prisma migrate dev
+
+# Optional: seed data
+npm run seed
+```
+
+## Usage
+
+```bash
+# Dev server
+npm run dev
+```
+
+Then open:
+[http://localhost:3000](http://localhost:3000)
+
+### Useful scripts
+
+```bash
+npm run dev
+npm run lint
 npm run build
 npm run start
+npm run seed
 ```
 
-### **Environment Variables**
-Ensure all production environment variables are properly configured:
-- Database URL with production credentials
-- Secure JWT secrets
-- Production SMTP settings
-- Live reCAPTCHA keys
-- Production API keys
+## Configuration
 
-### **Database Migration**
-```bash
-npx prisma migrate deploy
+Create a `.env` file in the project root. Commonly-used variables in this codebase:
+
+```env
+# App
+NODE_ENV=development
+NODEXA_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Database
+DATABASE_URL=postgresql://username:password@localhost:5432/nodexa
+
+# Auth
+JWT_SECRET=replace-me-with-a-long-random-secret
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=replace-me-with-a-long-random-secret
+
+# reCAPTCHA
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=replace-me
+RECAPTCHA_SECRET_KEY=replace-me
+
+# Email (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=replace-me
+SMTP_PASSWORD=replace-me
+EMAIL_FROM=noreply@nodexa.com
+
+# CoinMarketCap (charts / price fetch)
+COINMARKETCAP_API_KEY_CHARTS=replace-me
 ```
 
----
+Notes:
+- Set **both** `NODEXA_PUBLIC_APP_URL` and `NEXT_PUBLIC_APP_URL` to your base URL (the code currently references both).
+- Auth flows like signup/login/reset use **reCAPTCHA** and will fail without valid keys.
 
-## 🛡️ **Security Best Practices**
+## Screenshots
 
-- ✅ **Password Hashing** - bcryptjs with salt
-- ✅ **JWT Tokens** - Secure session management
-- ✅ **2FA Support** - TOTP authentication
-- ✅ **Input Validation** - Zod schema validation
-- ✅ **SQL Injection Protection** - Prisma ORM
-- ✅ **XSS Protection** - React built-in protection
-- ✅ **CSRF Protection** - NextAuth.js integration
-- ✅ **Rate Limiting** - API route protection
+Add screenshots to a folder like `public/screenshots/` and reference them here:
 
----
-
-## 🐛 **Troubleshooting**
-
-### **Common Issues**
-
-#### **Database Connection**
-```bash
-# Check PostgreSQL connection
-psql -h localhost -U username -d database_name
+```md
+![Dashboard](public/screenshots/dashboard.png)
+![Auth](public/screenshots/auth.png)
 ```
 
-#### **Environment Variables**
-- Verify all required variables are set
-- Check for typos in variable names
-- Ensure proper escaping of special characters
+## API Documentation
 
-#### **Build Errors**
-```bash
-# Clear Next.js cache
-rm -rf .next
-npm run build
-```
+This project uses Next.js route handlers under `src/app/api/*`. Common endpoints:
 
----
+### Auth
 
-## 🤝 **Contributing**
+- `POST /api/auth/signup` - create account (reCAPTCHA) + send verification email
+- `GET /api/auth/verify-email/[token]` - verify email token
+- `POST /api/auth/login` - login (reCAPTCHA) + sets `auth-token` cookie
+- `POST /api/auth/logout` - clears `auth-token` cookie
+- `GET /api/auth/check` - checks NextAuth session and/or custom JWT cookie
+- `POST /api/auth/resend-verification` - resend verification email
+- `POST /api/auth/reset-password` - request password reset email (reCAPTCHA)
+- `POST /api/auth/new-password` - set a new password (after verification)
 
-We welcome contributions! Please follow these guidelines:
+### Account
 
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
+- `GET /api/auth/myaccount` - fetch account details
+- `GET /api/auth/myaccount/fetchusername` - fetch username
+- `POST /api/auth/myaccount/updatemail` - update email
+- `POST /api/auth/myaccount/deleteaccount` - delete account
 
-### **Development Guidelines**
-- Follow TypeScript best practices
-- Use ESLint and Prettier for code formatting
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
+### 2FA (TOTP)
 
----
+- `POST /api/auth/2fa/enable`
+- `POST /api/auth/2fa/verify`
+- `POST /api/auth/2fa/disable`
+- `POST /api/auth/2fa/store2FA`
 
-## 📄 **License**
+### Neoxa price data
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- `GET /api/auth/neoxa` - latest Neoxa price data (from DB)
+- `GET /api/auth/neoxa/coinmarketcap` - latest Neoxa price data (from DB)
+- `GET /api/auth/neoxa/price-history?timeRange=1H|1D|1W|1M|3M|6M|1Y|ALL` - price history
+- `POST /api/auth/neoxa/price-history` - insert a price point
+- `GET /api/auth/neoxa/save-price` - fetch from CoinMarketCap and store to history
 
----
+### Other
 
-## 🙏 **Acknowledgments**
+- `GET /api/notifications` - creates/fetches latest notifications
+- `POST /api/contact` - contact form submission (sends email)
+- `GET /api/test-db` - basic DB connectivity test
 
-- **Neoxa Community** - For the amazing cryptocurrency ecosystem
-- **Next.js Team** - For the incredible React framework
-- **Prisma Team** - For the excellent database toolkit
-- **Vercel** - For hosting and deployment solutions
+## Contact
 
----
-
-## 📞 **Support**
-
-- **Email** - montecristodev2025@gmail.com
-- **Telegram** - alpha_T0108
-- **Issues** - [GitHub Issues](https://github.com/your-username/nodexa-smartnode-reward-system/issues)
-
----
-
+- **Email**: `international.contributor.21@gmail.com`
+- **Issues**: update the repository URL and use GitHub Issues
+- **License**: MIT (see `LICENSE`)
